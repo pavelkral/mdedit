@@ -9,6 +9,10 @@
 
 #include "mainwindow.h"
 
+extern "C" {
+#include "cmark.h"
+}
+
 MainWindow::MainWindow()
 {
 
@@ -21,6 +25,47 @@ MainWindow::~ MainWindow()
 {
 }
 
+void MainWindow::on_actionMDtoHtml_triggered()
+{
+    QString text = ui.ted->toPlainText();
+    QString htmlResult = convertMarkdownToHtml(text);
+
+    ui.textEditPreview->setHtml(htmlResult);
+    ui.textEditPreview->setStyleSheet("h1 { color: navy; } strong { color: black; } em { font-style: italic; }");
+}
+QString MainWindow::convertMarkdownToHtml(const QString &markdown)
+{
+    QByteArray markdownBytes = markdown.toUtf8();
+
+    int options = CMARK_OPT_DEFAULT | CMARK_OPT_UNSAFE | CMARK_OPT_SMART;
+
+    cmark_node *doc = cmark_parse_document(markdownBytes.constData(), markdownBytes.length(), options);
+
+    if (!doc) {
+        qWarning() << "cmark_parse_document failed to parse Markdown.";
+        return QString();
+    }
+
+
+    char* htmlCStr = cmark_render_html(doc, options);
+
+    if (!htmlCStr) {
+        qWarning() << "cmark_render_html failed to render HTML.";
+        cmark_node_free(doc);
+        return QString();
+    }
+
+    QString htmlResult = QString::fromUtf8(htmlCStr);
+
+    free(htmlCStr);
+    cmark_node_free(doc);
+
+    return htmlResult;
+
+
+
+
+}
 void MainWindow::on_actionToMD_triggered()
 {
     QString text = ui.ted->toPlainText();

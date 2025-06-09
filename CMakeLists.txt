@@ -19,6 +19,8 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
 
 qt_standard_project_setup()
 
+add_subdirectory(cmark)
+
 qt_add_executable(wedit
     #WIN32 MACOSX_BUNDLE
     src/mainwindow.cpp
@@ -40,6 +42,7 @@ target_link_libraries(wedit
     Qt6::Network
     Qt6::NetworkAuth
     Qt6::PrintSupport
+    cmark
 
 )
 
