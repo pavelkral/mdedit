@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/wedit.png</file>
+      
+    </qresource>
+</RCC>
