@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS src/forms)
 
-find_package(Qt6 6 REQUIRED COMPONENTS
+find_package(Qt6 6.5 REQUIRED COMPONENTS
     Core
     Gui
     Widgets
