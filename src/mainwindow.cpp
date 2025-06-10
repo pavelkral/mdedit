@@ -30,8 +30,8 @@ MainWindow::~ MainWindow()
 
 void MainWindow::updatePreview()
 {
-    QString markdownText = ui.ted->toPlainText(); // Získejte aktuální text z editoru
-    QString htmlText = convertMarkdownToHtml(markdownText);  // Převeďte ho na HTML pomocí vašeho parseru
+    QString markdownText = ui.ted->toPlainText();
+    QString htmlText = convertMarkdownToHtml(markdownText);
     ui.textEditPreview->setHtml(htmlText);
 }
 
@@ -136,14 +136,13 @@ void MainWindow::on_actionToMD_triggered()
     html.replace(QRegularExpression("(?<!\\*)\\*(?!\\*)(.*?)(?<!\\*)\\*(?!\\*)|(?<!_)(?!__)_(.*?)(?<!_)_(?!__)"),
                  "<em>\\1\\2</em>");
 
-    // --- 4. Odkazy ---
+    //
     // [text odkazu](url)
     html.replace(QRegularExpression("\\[(.*?)\\]\\((.*?)\\)"), "<a href=\"\\2\">\\1</a>");
 
-    // --- 5. In-line kód ---
+    //  In-line  ---
     // `kód`
-    //html.replace(QRegularExpression("`(.*?)`"), "<code>\\1</code>");
-   // html.replace(QRegularExpression("```(.*?)```"), "<code>\\1</code>");
+    //html.replace(QRegularExpression("`(.*?)`"), "<code>\\1</code>")
     // --- 6. Seznamy (ul) ---
     // Najdeme všechny řádky začínající - nebo *
     QStringList listItems;
