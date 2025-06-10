@@ -19,37 +19,11 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QTextEdit" name="ted"/>
-    </item>
     <item row="0" column="1">
      <widget class="QTextEdit" name="textEditPreview"/>
     </item>
-    <item row="0" column="2" rowspan="2">
-     <spacer>
-      <property name="orientation">
-       <enum>Qt::Orientation::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>181</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0">
-     <spacer>
-      <property name="orientation">
-       <enum>Qt::Orientation::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>251</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
+    <item row="0" column="0">
+     <widget class="QTextEdit" name="ted"/>
     </item>
    </layout>
   </widget>

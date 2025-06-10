@@ -11,6 +11,7 @@ It is not feature complete and it is not tested on all platforms.
 
 - Qt6
 - CMAKE
+- cmark
 
 ### Build Steps
 ```
@@ -24,4 +25,4 @@ make (by platform)
 ## References
 
 - https://qt.io
-- https://developers.google.com/workspace/calendar/api/guides/overview
+
