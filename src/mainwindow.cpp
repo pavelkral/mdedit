@@ -32,7 +32,10 @@ void MainWindow::updatePreview()
 {
     QString markdownText = ui.ted->toPlainText();
     QString htmlText = convertMarkdownToHtml(markdownText);
+    ui.textEditPreview->setStyleSheet("h1 { color: navy; } strong { color: black; } em { font-style: italic; }");
     ui.textEditPreview->setHtml(htmlText);
+    ui.textEditHtml->setPlainText(htmlText);
+    ui.textEditPreview->setStyleSheet("h1 { color: red; } ul { color: black; } em { font-style: italic; }");
 }
 
 void MainWindow::on_actionMDtoHtml_triggered()
@@ -81,20 +84,15 @@ void MainWindow::on_actionToMD_triggered()
     QString text = ui.ted->toPlainText();
     QString html = text;
 
-    // --- 1. Víceřádkové bloky kódu (Code Fences) ---
-    // Musí být parsovány PŘED inline kódem!
-    // ``` (volitelný jazyk)
-    // kód
+    // --- 1.  (Code Fences) ---
     // ```
-    // Používáme QRegularExpression::DotMatchesEverythingOption pro zachycení nových řádků.
-    // Zachycujeme volitelný jazyk (\\s*(\\S*)?): \S* = libovolný ne-mezerový znak
-    // (.*?) = zachycení obsahu kódu, líně.
+    // code
+    // ```
+    //  (\\s*(\\S*)?): \S* = libovolný ne-mezerový znak
+    // (.*?) = lazy
     QRegularExpression codeBlockRegExp("```\\s*(\\S*)?\n(.*?)```",
                                        QRegularExpression::DotMatchesEverythingOption);
 
-    // Iterujeme přes všechny shody a nahrazujeme je.
-    // Používáme QRegularExpressionMatchIterator pro složitější nahrazování,
-    // protože potřebujeme ošetřit volitelný jazyk a přidat ho do class atributu.
     QRegularExpressionMatchIterator i = codeBlockRegExp.globalMatch(html);
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
@@ -107,19 +105,17 @@ void MainWindow::on_actionToMD_triggered()
             classAttr = QString(" class=\"language-%1\"").arg(language);
         }
 
-        // Vytvoříme HTML pro blok kódu
-        // Doporučuje se vložit <code> dovnitř <pre>
         QString replacement = QString("<pre><code%1>%2</code></pre>")
                                   .arg(classAttr)
-                                  .arg(codeContent.toHtmlEscaped()); // Důležité: escape HTML znaky v kódu!
+                                  .arg(codeContent.toHtmlEscaped()); // escape HTML
 
-        // Nahradíme původní Markdown shodu HTML kódem
+
         html.replace(fullMatch, replacement);
     }
 
 
-    // --- 2. Inline kód ---
-    // `kód`
+    // --- 2. Inline  ---
+    // `code`
     // Toto musí být až PO parsování víceřádkových bloků!
     QRegularExpression inlineCodeRegExp("`(.*?)`");
     html.replace(inlineCodeRegExp, "<code>\\1</code>");
@@ -128,22 +124,22 @@ void MainWindow::on_actionToMD_triggered()
     html.replace(QRegularExpression("^##\\s*(.*)$", QRegularExpression::MultilineOption), "<h2>\\1</h2>");
     html.replace(QRegularExpression("^#\\s*(.*)$", QRegularExpression::MultilineOption), "<h1>\\1</h1>");
 
-    // --- 2. Tučný text ---
+    // --- 2.  ---
     // **text** / __text__
     html.replace(QRegularExpression("\\*\\*(.*?)\\*\\*|__(.*?)__"), "<strong>\\1\\2</strong>");
 
-    // --- 3. Kurzíva ---// *text* nebo _text_
+    // --- 3.italic ---// *text* / _text_
     html.replace(QRegularExpression("(?<!\\*)\\*(?!\\*)(.*?)(?<!\\*)\\*(?!\\*)|(?<!_)(?!__)_(.*?)(?<!_)_(?!__)"),
                  "<em>\\1\\2</em>");
 
     //
-    // [text odkazu](url)
+    // [text](url)
     html.replace(QRegularExpression("\\[(.*?)\\]\\((.*?)\\)"), "<a href=\"\\2\">\\1</a>");
 
     //  In-line  ---
     // `kód`
     //html.replace(QRegularExpression("`(.*?)`"), "<code>\\1</code>")
-    // --- 6. Seznamy (ul) ---
+    // --- 6. S (ul) ---
     // Najdeme všechny řádky začínající - nebo *
     QStringList listItems;
     QRegularExpression listItemRegExp("^\\s*[-*]\\s*(.*)$", QRegularExpression::MultilineOption);
@@ -153,16 +149,14 @@ void MainWindow::on_actionToMD_triggered()
         listItems << "<li>" + match.captured(1).trimmed() + "</li>";
     }
 
-    //  vytvoříme <ul>
+    //  <ul>
     if (!listItems.isEmpty()) {
         QString ul = "<ul>\n" + listItems.join("\n") + "\n</ul>";
-
-        // Odstraníme původní řádky se seznamem
         html.replace(listItemRegExp, ""); // Odstraní původní řádky
-        html.prepend(ul + "\n"); // Přidá <ul> na začátek nebo podle potřeby
+        html.prepend(ul + "\n");
     }
 
-    // --- 7. Zalomení řádků jako <br> ---
+    // --- 7. <br> ---
     html.replace("\n", "<br>");
 
     // Výstup
@@ -218,7 +212,7 @@ void MainWindow::on_actionExit_triggered()
 }
 void MainWindow::on_actionAbout_triggered()
 {
-	QMessageBox::information(this, "info","Created by Xsoft.");
+    QMessageBox::information(this, "info","Created in Qt.");
 	 
     
 }
