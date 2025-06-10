@@ -80,7 +80,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionTohtml"/>
   </widget>
   <action name="actionFileOpen">
    <property name="text">
