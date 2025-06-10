@@ -153,7 +153,7 @@ void MainWindow::on_actionToMD_triggered()
         listItems << "<li>" + match.captured(1).trimmed() + "</li>";
     }
 
-    // Pokud nějaké máme, vytvoříme <ul>
+    //  vytvoříme <ul>
     if (!listItems.isEmpty()) {
         QString ul = "<ul>\n" + listItems.join("\n") + "\n</ul>";
 
