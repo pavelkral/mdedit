@@ -52,8 +52,10 @@ public:
 
 virtual ~MainWindow();
 
+
 protected:
 private slots:
+        void updatePreview();
         void on_actionMDtoHtml_triggered();
         void on_actionToMD_triggered();
         void on_actionFileOpen_triggered();

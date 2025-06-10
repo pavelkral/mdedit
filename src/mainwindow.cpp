@@ -19,10 +19,20 @@ MainWindow::MainWindow()
     ui.setupUi(this);
     setWindowTitle(tr("Wedit"));
     setWindowIcon(QIcon("img/wedit.png"));
+    connect(ui.ted, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
+    updatePreview();
 }
+
 
 MainWindow::~ MainWindow()
 {
+}
+
+void MainWindow::updatePreview()
+{
+    QString markdownText = ui.ted->toPlainText(); // Získejte aktuální text z editoru
+    QString htmlText = convertMarkdownToHtml(markdownText);  // Převeďte ho na HTML pomocí vašeho parseru
+    ui.textEditPreview->setHtml(htmlText);
 }
 
 void MainWindow::on_actionMDtoHtml_triggered()
@@ -31,7 +41,7 @@ void MainWindow::on_actionMDtoHtml_triggered()
     QString htmlResult = convertMarkdownToHtml(text);
 
     ui.textEditPreview->setHtml(htmlResult);
-    ui.textEditPreview->setStyleSheet("h1 { color: navy; } strong { color: black; } em { font-style: italic; }");
+    ui.textEditPreview->setStyleSheet("h1 { color: red; } strong { color: black; } em { font-style: italic; }");
 }
 QString MainWindow::convertMarkdownToHtml(const QString &markdown)
 {
