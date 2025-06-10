@@ -195,7 +195,6 @@ void MainWindow::on_actionFileSave_triggered()
     QFile file(stt);
     if ( file.open(QFile::WriteOnly ) ) {
        QTextStream  stream( &file );
-
         stream.setEncoding(QStringConverter::Utf8);
         //stream.setCodec(QTextCodec::codecForName("windows-1250"));
         stream << ui.ted->toPlainText(); 
