@@ -164,67 +164,66 @@ void MainWindow::on_actionToMD_triggered()
     ui.ted->setStyleSheet("h1 { color: navy; } strong { color: black; } em { font-style: italic; }");
 }
 
+void MainWindow::on_actionFileOpen_triggered() {
+    // QMessageBox::information(this, "info","otviram soubor");
+    QString filename = QFileDialog::getOpenFileName(
+        this, tr("Open File"), "/home", tr("Text files (*.*)"));
 
-void MainWindow::on_actionFileOpen_triggered()
-{
-    //QMessageBox::information(this, "info","otviram soubor");
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),"/home",tr("Text files (*.*)"));
-	
-    if(!filename.isEmpty()) {
-            QFile f(filename);
-            if(f.open(QFile::ReadOnly)) {
-                            //ui.ted->setText(f.readAll());
-                            QByteArray data = f.readAll();
-                //QTextCodec *codec = Qt::codecForHtml(data);
-                 QString str = QString::fromUtf8(data);
-                if (Qt::mightBeRichText(str)) {
+    if (!filename.isEmpty()) {
+        QFile f(filename);
+        if (f.open(QFile::ReadOnly)) {
+            // ui.ted->setText(f.readAll());
+            QByteArray data = f.readAll();
+            // QTextCodec *codec = Qt::codecForHtml(data);
+            QString str = QString::fromUtf8(data);
+            if (Qt::mightBeRichText(str)) {
                 ui.ted->setPlainText(str);
-                } else {
+            } else {
                 str = QString::fromLocal8Bit(data);
                 ui.ted->setPlainText(str);
-                }
-             }
+            }
+        }
     }
 }
 void MainWindow::on_actionFileSave_triggered()
 {
-	//QMessageBox::information(this, "info","ukladam soubor ");
-	 QString stt = QFileDialog::getSaveFileName(this, tr("Save As "),
+    //QMessageBox::information(this, "info","ukladam soubor ");
+     QString stt = QFileDialog::getSaveFileName(this, tr("Save As "),
                     "/home",
-                 tr("Text files (*.html )"));   
+                 tr("Text files (*.html )"));
     QFile file(stt);
     if ( file.open(QFile::WriteOnly ) ) {
        QTextStream  stream( &file );
         stream.setEncoding(QStringConverter::Utf8);
         //stream.setCodec(QTextCodec::codecForName("windows-1250"));
-        stream << ui.ted->toPlainText(); 
+        stream << ui.ted->toPlainText();
         file.close();
     }
 
-    
+
 }
 void MainWindow::on_actionExit_triggered()
 {
-	QApplication::quit();
+    QApplication::quit();
 
-    
+
 }
 void MainWindow::on_actionAbout_triggered()
 {
     QMessageBox::information(this, "info","Created in Qt.");
-	 
-    
+
+
 }
 void MainWindow::on_actionTohtml_triggered()
 {
-	//QMessageBox::information(this, "info"," tags ");
-	QString st = ui.ted->toPlainText();
+    //QMessageBox::information(this, "info"," tags ");
+    QString st = ui.ted->toPlainText();
     st.replace(QString("\n"), QString("\n<br />"));
     st.prepend( "<!DOCTYPE HTML PUBLIC-//W3C//DTD HTML 4.01 Transitional//EN>\n<html>\n<head><title>title</title>\n<link href=styl2.css rel=stylesheet type=text/css />\n<META http-equiv=content-type content=text/html; charset=windows-1250>\n<META http-equiv=Content-language content=cs>\n</head>\n<body bgcolor=white>\n" );
     st.append( "\n\n<body>\n</body>\n</html>" );
     ui.ted->setPlainText(st);
-   
-  
+
+
 }
 void MainWindow::on_actionPrint_triggered()
 {
@@ -240,7 +239,7 @@ void MainWindow::on_actionPrint_triggered()
      }
      delete dlg;
  #endif
-   
-  
+
+
 }
 
