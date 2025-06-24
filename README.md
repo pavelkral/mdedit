@@ -1,4 +1,4 @@
-# MD GUI TOOL
+# MD and HTML GUI TOOL
 
 > [!WARNING]
 > This application is still in development.
