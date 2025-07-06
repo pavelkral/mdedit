@@ -41,6 +41,7 @@
 
 #include <QMainWindow>
 
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -50,10 +51,11 @@ public:
     MainWindow();
     QString convertMarkdownToHtml(const QString &markdown);
 
+
 virtual ~MainWindow();
 
-
 protected:
+
 private slots:
         void updatePreview();
         void on_actionMDtoHtml_triggered();
@@ -64,6 +66,7 @@ private slots:
         void on_actionAbout_triggered();
         void on_actionTohtml_triggered();
         void on_actionPrint_triggered();
+
 
 private:
 };

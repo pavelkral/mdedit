@@ -21,11 +21,13 @@ MainWindow::MainWindow()
     setWindowIcon(QIcon("img/wedit.png"));
     connect(ui.ted, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
     updatePreview();
+
 }
 
 
 MainWindow::~ MainWindow()
 {
+
 }
 
 void MainWindow::updatePreview()
@@ -36,6 +38,7 @@ void MainWindow::updatePreview()
     ui.textEditPreview->setHtml(htmlText);
     ui.textEditHtml->setPlainText(htmlText);
     ui.textEditPreview->setStyleSheet("h1 { color: red; } ul { color: black; } em { font-style: italic; }");
+
 }
 
 void MainWindow::on_actionMDtoHtml_triggered()

@@ -31,8 +31,9 @@ qt_add_executable(wedit
     resource/wedit.rc
     README.md
     .gitignore LICENSE.txt
-
 )
+
+
 
 target_link_libraries(wedit
     PRIVATE
