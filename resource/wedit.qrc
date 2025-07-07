@@ -1,6 +1,16 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/wedit.png</file>
-      
+        <file>icons/a.png</file>
+        <file>icons/b.png</file>
+        <file>icons/code.png</file>
+        <file>icons/h1.png</file>
+        <file>icons/h2.png</file>
+        <file>icons/h3.png</file>
+        <file>icons/i.png</file>
+        <file>icons/img.png</file>
+        <file>icons/p.png</file>
+        <file>icons/ul.png</file>
+        <file>icons/video.png</file>
     </qresource>
 </RCC>

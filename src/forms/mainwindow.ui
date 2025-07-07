@@ -62,7 +62,7 @@
      <string>Edit</string>
     </property>
     <addaction name="actionMDtoHtml"/>
-    <addaction name="actionToMD"/>
+    <addaction name="actionqregMdToHtml"/>
     <addaction name="actionTohtml"/>
    </widget>
    <addaction name="menuFile"/>
@@ -80,6 +80,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionheadOne"/>
   </widget>
   <action name="actionFileOpen">
    <property name="text">
@@ -111,14 +112,6 @@
     <string>print</string>
    </property>
   </action>
-  <action name="actionToMD">
-   <property name="text">
-    <string>To MD</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
   <action name="actionMDtoHtml">
    <property name="text">
     <string>MDtoHtml</string>
@@ -127,7 +120,35 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
+  <action name="actionheadOne">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/h1.png</normaloff>:/icons/h1.png</iconset>
+   </property>
+   <property name="text">
+    <string>headOne</string>
+   </property>
+   <property name="toolTip">
+    <string>H1</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionqregMdToHtml">
+   <property name="text">
+    <string>qregMdToHtml</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;qregMdToHtml&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resource/wedit.qrc"/>
+ </resources>
  <connections/>
 </ui>

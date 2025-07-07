@@ -57,9 +57,11 @@ virtual ~MainWindow();
 protected:
 
 private slots:
+
+        void on_actionheadOne_triggered();
         void updatePreview();
         void on_actionMDtoHtml_triggered();
-        void on_actionToMD_triggered();
+        void on_actionregMdToHtml_triggered();
         void on_actionFileOpen_triggered();
         void on_actionFileSave_triggered();
         void on_actionExit_triggered();

@@ -31,6 +31,12 @@ MainWindow::~ MainWindow()
 
 }
 
+void MainWindow::on_actionheadOne_triggered()
+{
+
+}
+
+
 void MainWindow::updatePreview()
 {
     QString markdownText = ui.ted->toPlainText();
@@ -83,7 +89,7 @@ QString MainWindow::convertMarkdownToHtml(const QString &markdown)
 
 
 }
-void MainWindow::on_actionToMD_triggered()
+void MainWindow::on_actionregMdToHtml_triggered()
 {
     QString text = ui.ted->toPlainText();
     QString html = text;
@@ -136,7 +142,7 @@ void MainWindow::on_actionToMD_triggered()
     html.replace(QRegularExpression("(?<!\\*)\\*(?!\\*)(.*?)(?<!\\*)\\*(?!\\*)|(?<!_)(?!__)_(.*?)(?<!_)_(?!__)"),
                  "<em>\\1\\2</em>");
 
-    //
+    //link
     // [text](url)
     html.replace(QRegularExpression("\\[(.*?)\\]\\((.*?)\\)"), "<a href=\"\\2\">\\1</a>");
 
@@ -162,8 +168,6 @@ void MainWindow::on_actionToMD_triggered()
 
     // --- 7. <br> ---
     html.replace("\n", "<br>");
-
-    // Výstup
     ui.ted->setHtml(html);
     ui.ted->setStyleSheet("h1 { color: navy; } strong { color: black; } em { font-style: italic; }");
 }
