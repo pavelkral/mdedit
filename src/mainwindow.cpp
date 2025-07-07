@@ -22,6 +22,7 @@ MainWindow::MainWindow()
     connect(ui.ted, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
     updatePreview();
 
+
 }
 
 
