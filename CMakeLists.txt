@@ -16,6 +16,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     NetworkAuth  
     PrintSupport
 )
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 qt_standard_project_setup()
 
@@ -31,6 +32,8 @@ qt_add_executable(wedit
     resource/wedit.rc
     README.md
     .gitignore LICENSE.txt
+    src/mdparser.h
+    src/mdparser.cpp
 )
 
 
@@ -46,6 +49,7 @@ target_link_libraries(wedit
     cmark
 
 )
+target_link_libraries(wedit PRIVATE Qt6::Core)
 
 include(GNUInstallDirs)
 
