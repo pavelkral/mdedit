@@ -5,7 +5,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
-
+#include "mdparser.h"
 
 #include "mainwindow.h"
 
@@ -57,14 +57,6 @@ void MainWindow::updatePreview()
 
 }
 
-void MainWindow::on_actionMDtoHtml_triggered()
-{
-    QString text = ui.ted->toPlainText();
-    QString htmlResult = convertMarkdownToHtml(text);
-
-    ui.textEditPreview->setHtml(htmlResult);
-    ui.textEditPreview->setStyleSheet("h1 { color: red; } strong { color: black; } em { font-style: italic; }");
-}
 QString MainWindow::convertMarkdownToHtml(const QString &markdown)
 {
     QByteArray markdownBytes = markdown.toUtf8();
@@ -96,11 +88,6 @@ QString MainWindow::convertMarkdownToHtml(const QString &markdown)
 
 
 
-
-}
-void MainWindow::on_actionregMdToHtml_triggered()
-{
-    QString text = ui.ted->toPlainText();
 
 }
 
@@ -158,7 +145,11 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionTohtml_triggered()
 {
 
-
+    QString markdownText = ui.ted->toPlainText();
+    QString htmlText = MdParser::addHtmlHeader(markdownText);
+   // ui.textEditPreview->setStyleSheet("h1 { color: navy; } strong { color: black; } em { font-style: italic; }");
+   // ui.textEditPreview->setHtml(htmlText);
+    ui.ted->setPlainText(htmlText);
 
 }
 void MainWindow::on_actionPrint_triggered()
@@ -168,8 +159,8 @@ void MainWindow::on_actionPrint_triggered()
      printer.setFullPage(true);
      QPrintDialog *dlg = new QPrintDialog(&printer, this);
      if (ui.ted->textCursor().hasSelection())
-         dlg->setOption(QAbstractPrintDialog::PrintSelection, true);
-     dlg->setWindowTitle(tr("Print Document"));
+        dlg->setOption(QAbstractPrintDialog::PrintSelection, true);
+        dlg->setWindowTitle(tr("Print Document"));
      if (dlg->exec() == QDialog::Accepted) {
          ui.ted->print(&printer);
      }
