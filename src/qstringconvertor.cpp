@@ -1,12 +1,12 @@
-#include "mdparser.h"
+#include "qstringconvertor.h"
 
 #include <QRegularExpression>
 
-MdParser::MdParser(QObject *parent)
+QStringConvertor::QStringConvertor(QObject *parent)
     : QObject{parent}
 {}
 
-QString MdParser::parseMD(QString &S)
+QString QStringConvertor::mdToHtml(QString &S)
 {
     QString html = S;
 
@@ -87,7 +87,7 @@ QString MdParser::parseMD(QString &S)
     return html;
 }
 
-QString MdParser::addHtmlHeader(QString &str)
+QString QStringConvertor::addHtmlHeader(QString &str)
 {
     //QMessageBox::information(this, "info"," tags ");
     qDebug() << "ok";

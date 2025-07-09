@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>532</height>
+    <width>896</width>
+    <height>715</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>635</width>
+     <width>896</width>
      <height>25</height>
     </rect>
    </property>
@@ -79,6 +79,16 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionheadOne"/>
+   <addaction name="actionheadTwo"/>
+   <addaction name="actionheadThree"/>
+   <addaction name="actionbold"/>
+   <addaction name="actionitalic"/>
+   <addaction name="actionp"/>
+   <addaction name="actionul"/>
+   <addaction name="actionlink"/>
+   <addaction name="actionimg"/>
+   <addaction name="actionvideo"/>
+   <addaction name="actioncode"/>
   </widget>
   <action name="actionFileOpen">
    <property name="text">
@@ -120,6 +130,156 @@
    </property>
    <property name="toolTip">
     <string>H1</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionheadTwo">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/h2.png</normaloff>:/icons/h2.png</iconset>
+   </property>
+   <property name="text">
+    <string>headTwo</string>
+   </property>
+   <property name="toolTip">
+    <string>H2</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionheadThree">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/h3.png</normaloff>:/icons/h3.png</iconset>
+   </property>
+   <property name="text">
+    <string>headThree</string>
+   </property>
+   <property name="toolTip">
+    <string>H3</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionbold">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/b.png</normaloff>:/icons/b.png</iconset>
+   </property>
+   <property name="text">
+    <string>bold</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;B&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionitalic">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/i.png</normaloff>:/icons/i.png</iconset>
+   </property>
+   <property name="text">
+    <string>italic</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;i&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionlink">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/a.png</normaloff>:/icons/a.png</iconset>
+   </property>
+   <property name="text">
+    <string>link</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;link&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionimg">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/img.png</normaloff>:/icons/img.png</iconset>
+   </property>
+   <property name="text">
+    <string>img</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;img&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionul">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/ul.png</normaloff>:/icons/ul.png</iconset>
+   </property>
+   <property name="text">
+    <string>ul</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ul&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionvideo">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/video.png</normaloff>:/icons/video.png</iconset>
+   </property>
+   <property name="text">
+    <string>video</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;video&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actioncode">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/code.png</normaloff>:/icons/code.png</iconset>
+   </property>
+   <property name="text">
+    <string>code</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;code&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionp">
+   <property name="icon">
+    <iconset resource="../../resource/wedit.qrc">
+     <normaloff>:/icons/p.png</normaloff>:/icons/p.png</iconset>
+   </property>
+   <property name="text">
+    <string>p</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;p&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

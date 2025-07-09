@@ -32,8 +32,8 @@ qt_add_executable(wedit
     resource/wedit.rc
     README.md
     .gitignore LICENSE.txt
-    src/mdparser.h
-    src/mdparser.cpp
+    src/qstringconvertor.h
+    src/qstringconvertor.cpp
 )
 
 

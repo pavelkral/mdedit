@@ -40,7 +40,8 @@
 #include "ui_mainwindow.h"
 
 #include <QMainWindow>
-
+class QNetworkAccessManager;
+class QNetworkReply;
 
 class MainWindow : public QMainWindow
 {
@@ -50,14 +51,20 @@ private:
 public:
     MainWindow();
     QString convertMarkdownToHtml(const QString &markdown);
-
-
+    void insertImageFromWeb();
+    void insertImageProgrammatically();
+    // Slot pro zpracování staženého obrázku
 virtual ~MainWindow();
+private:
+
+    QNetworkAccessManager *networkManager;
+
+
 
 protected:
 
 private slots:
-
+        void onImageDownloaded(QNetworkReply *reply);
         void on_actionheadOne_triggered();
         void updatePreview();
         void on_actionFileOpen_triggered();
@@ -66,6 +73,7 @@ private slots:
         void on_actionAbout_triggered();       
         void on_actionPrint_triggered();
         void on_actionTohtml_triggered();
+        void on_actionimg_triggered();
 private:
 };
 
