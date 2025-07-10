@@ -24,72 +24,78 @@ MainWindow::MainWindow() {
     QString filename = "";
     updatePreview();
     networkManager = new QNetworkAccessManager(this);
+    resize(1280,720);
 }
 
 MainWindow::~MainWindow() {
 
 }
+void MainWindow::updatePreview() {
+    QString markdownText = ui.ted->toPlainText();
+    QString htmlText = convertMarkdownToHtml(markdownText);
+    ui.textEditPreview->setHtml(htmlText);
+    ui.textEditHtml->setPlainText(htmlText);
+    ui.textEditPreview->setStyleSheet("h1 { color: red; } ul { color: black; } em { font-style: italic; }");
+    findAndDownloadImages(htmlText);
+
+}
+void MainWindow::findAndDownloadImages(const QString &html)
+{
+    QRegularExpression imgRegex("<img[^>]+src=[\"'](https?://[^\"']+)[\"'][^>]*>");
+    auto matches = imgRegex.globalMatch(html);
+
+    while (matches.hasNext()) {
+        auto match = matches.next();
+        QUrl url(match.captured(1));
+
+        if (url.isValid() && !downloadedImageUrls.contains(url)) {
+            qDebug() << "Img found:" << url;
+            downloadedImageUrls.insert(url);
+
+            QNetworkRequest request(url);
+            QNetworkReply *reply = networkManager->get(request);
+
+
+            connect(reply, &QNetworkReply::finished, this, &MainWindow::onImageDownloaded);
+        }
+    }
+}
 //TODU FIX
 void MainWindow::on_actionimg_triggered() {
 
-    // ui.ted->moveCursor(QTextCursor::End); // Přesuneme kurzor na konec
-    // ui.ted->insertPlainText(
-    //    "<p>Obrázek vložený z webu:</p>"
-    //    "<img
-    //    src='https://placehold.co/400x200/007BFF/FFFFFF?text=Obrázek+z+webu' />"
-    //    "<p>HTML metoda je velmi jednoduchá.</p>"
-    //    );
-
-    QUrl imageUrl("https://placehold.co/400x200/007BFF/FFFFFF?");
-    QNetworkRequest request(imageUrl);
-    QNetworkReply *reply = networkManager->get(request);
-
-    connect(reply, &QNetworkReply::finished, this,
-            [this, reply]() { onImageDownloaded(reply); });
+     ui.ted->moveCursor(QTextCursor::End);
+     ui.ted->insertPlainText(
+        "<p>Image from web:</p>"
+        "<img src='https://www.pavelkral.net/images/projects/sport-wheelchair/06083-ruggby-chair9.jpg' />"
+       "<p>HTML</p>"
+        );
 
     ui.ted->moveCursor(QTextCursor::End);
 
 }
-void MainWindow::onImageDownloaded(QNetworkReply *reply) {
+void MainWindow::onImageDownloaded() {
+
+    QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
+    if (!reply) return;
 
     if (reply->error() != QNetworkReply::NoError) {
-        qWarning() << "Chyba při stahování obrázku:" << reply->errorString();
-        ui.ted->insertPlainText(
-            QString("<p><b>Chyba stahování: %1</b></p>").arg(reply->errorString()));
+        qWarning() << "err" << reply->url().toString() << ":" << reply->errorString();
         reply->deleteLater();
         return;
     }
 
-    // Přečteme stažená data
-    QByteArray imageData = reply->readAll();
-
-    // Vytvoříme URL, které bude sloužit jako unikátní ID pro náš zdroj
     QUrl url = reply->url();
+    QByteArray data = reply->readAll();
+    qDebug() << "Downloaded:" << url.toString();
 
-    // Přidáme stažená data jako zdroj do dokumentu
-    ui.textEditPreview->document()->addResource(QTextDocument::ImageResource, url, QVariant(imageData));
+    ui.textEditPreview->document()->addResource(QTextDocument::ImageResource, url, QVariant(data));
 
-    // Vložíme obrázek na konec dokumentu
-    QTextCursor cursor = ui.textEditPreview->textCursor();
-    cursor.movePosition(QTextCursor::End);
-
-    QTextImageFormat imageFormat;
-    imageFormat.setName(url.toString()); // Použijeme URL jako ID
-    // imageFormat.setWidth(400);
-
-    cursor.insertImage(imageFormat);
-
-    // Uvolníme paměť po objektu odpovědi
-    reply->deleteLater();
+    reply->deleteLater(); //
 }
 
-/**
- * @brief Vloží obrázek z lokálního souboru programově.
- * Otevře dialog pro výběr souboru.
- */
 void MainWindow::insertImageProgrammatically() {
     QString imagePath = QFileDialog::getOpenFileName(
-        this, "Vyberte obrázek", "", "Obrázky (*.png *.jpg *.jpeg *.bmp *.gif)");
+        this, "Img select", "", "format (*.png *.jpg *.jpeg *.bmp *.gif)");
 
     if (imagePath.isEmpty()) {
         return;
@@ -123,21 +129,9 @@ void MainWindow::on_actionTohtml_triggered() {
 
     QString markdownText = ui.ted->toPlainText();
     QString htmlText = QStringConvertor::addHtmlHeader(markdownText);
-    // ui.textEditPreview->setStyleSheet("h1 { color: navy; } strong { color:
-    // black; } em { font-style: italic; }");
-    // ui.textEditPreview->setHtml(htmlText);
     ui.ted->setPlainText(htmlText);
 }
-void MainWindow::updatePreview() {
-    QString markdownText = ui.ted->toPlainText();
-    QString htmlText = convertMarkdownToHtml(markdownText);
-    ui.textEditPreview->setStyleSheet("h1 { color: navy; } strong { color: "
-                                      "black; } em { font-style: italic; }");
-    ui.textEditPreview->setHtml(htmlText);
-    ui.textEditHtml->setPlainText(htmlText);
-    ui.textEditPreview->setStyleSheet(
-        "h1 { color: red; } ul { color: black; } em { font-style: italic; }");
-}
+
 
 QString MainWindow::convertMarkdownToHtml(const QString &markdown) {
     QByteArray markdownBytes = markdown.toUtf8();

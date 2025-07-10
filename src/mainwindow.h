@@ -58,13 +58,14 @@ virtual ~MainWindow();
 private:
 
     QNetworkAccessManager *networkManager;
-
-
+    QSet<QUrl> downloadedImageUrls;
+    void findAndDownloadImages(const QString &html);
 
 protected:
 
 private slots:
-        void onImageDownloaded(QNetworkReply *reply);
+
+        void onImageDownloaded();
         void on_actionheadOne_triggered();
         void updatePreview();
         void on_actionFileOpen_triggered();
