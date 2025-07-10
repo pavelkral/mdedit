@@ -12,6 +12,7 @@ public:
     QStringConvertor(QStringConvertor &&) = delete;
     QStringConvertor &operator=(const QStringConvertor &) = delete;
     QStringConvertor &operator=(QStringConvertor &&) = delete;
+
     static QString mdToHtml(QString &S);
     static QString addHtmlHeader(QString &str);
 
