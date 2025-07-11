@@ -86,9 +86,9 @@
    <addaction name="actionp"/>
    <addaction name="actionul"/>
    <addaction name="actionlink"/>
+   <addaction name="actioncode"/>
    <addaction name="actionimg"/>
    <addaction name="actionvideo"/>
-   <addaction name="actioncode"/>
   </widget>
   <action name="actionFileOpen">
    <property name="text">

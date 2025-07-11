@@ -51,28 +51,15 @@ void MainWindow::findAndDownloadImages(const QString &html)
         if (url.isValid() && !downloadedImageUrls.contains(url)) {
             qDebug() << "Img found:" << url;
             downloadedImageUrls.insert(url);
-
             QNetworkRequest request(url);
             QNetworkReply *reply = networkManager->get(request);
-
 
             connect(reply, &QNetworkReply::finished, this, &MainWindow::onImageDownloaded);
         }
     }
 }
 //TODU FIX
-void MainWindow::on_actionimg_triggered() {
 
-     ui.ted->moveCursor(QTextCursor::End);
-     ui.ted->insertPlainText(
-        "<p>Image from web:</p>"
-        "<img src='https://www.pavelkral.net/images/projects/sport-wheelchair/06083-ruggby-chair9.jpg' />"
-       "<p>HTML</p>"
-        );
-
-    ui.ted->moveCursor(QTextCursor::End);
-
-}
 void MainWindow::onImageDownloaded() {
 
     QNetworkReply *reply = qobject_cast<QNetworkReply*>(sender());
@@ -105,8 +92,7 @@ void MainWindow::insertImageProgrammatically() {
     cursor.movePosition(QTextCursor::End);
 
     QUrl imageUrl = QUrl::fromLocalFile(imagePath);
-    ui.ted->document()->addResource(QTextDocument::ImageResource, imageUrl,
-                                    QVariant(imageUrl));
+    ui.ted->document()->addResource(QTextDocument::ImageResource, imageUrl,QVariant(imageUrl));
 
     QTextImageFormat imageFormat;
     imageFormat.setName(imageUrl.toString());
@@ -114,6 +100,7 @@ void MainWindow::insertImageProgrammatically() {
 
     cursor.insertImage(imageFormat);
 }
+//.......................................................................................
 
 void MainWindow::on_actionheadOne_triggered() {
     QTextCursor cursor = ui.ted->textCursor();
@@ -122,6 +109,51 @@ void MainWindow::on_actionheadOne_triggered() {
 
         QString selectedText = cursor.selectedText();
         QString newText = QString("# %1").arg(selectedText);
+        cursor.insertText(newText);
+    }
+}
+void MainWindow::on_actionimg_triggered() {
+
+    ui.ted->moveCursor(QTextCursor::End);
+
+    ui.ted->insertPlainText(
+        R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='https://www.pavelkral.net/images/aplication/min/min_qmetronom.png' /></p><p></p>)");
+
+    ui.ted->moveCursor(QTextCursor::End);
+
+}
+void MainWindow::on_actionheadTwo_triggered()
+{
+    QTextCursor cursor = ui.ted->textCursor();
+
+    if (cursor.hasSelection()) {
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString("## %1").arg(selectedText);
+        cursor.insertText(newText);
+    }
+}
+
+void MainWindow::on_actionheadThree_triggered()
+{
+    QTextCursor cursor = ui.ted->textCursor();
+
+    if (cursor.hasSelection()) {
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString("### %1").arg(selectedText);
+        cursor.insertText(newText);
+    }
+}
+
+void MainWindow::on_actionbold_triggered()
+{
+    QTextCursor cursor = ui.ted->textCursor();
+
+    if (cursor.hasSelection()) {
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString("<b> %1 </b>").arg(selectedText);
         cursor.insertText(newText);
     }
 }

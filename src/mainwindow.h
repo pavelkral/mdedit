@@ -53,7 +53,7 @@ public:
     QString convertMarkdownToHtml(const QString &markdown);
     void insertImageFromWeb();
     void insertImageProgrammatically();
-    // Slot pro zpracování staženého obrázku
+
 virtual ~MainWindow();
 private:
 
@@ -65,16 +65,22 @@ protected:
 
 private slots:
 
-        void onImageDownloaded();
-        void on_actionheadOne_triggered();
         void updatePreview();
+        void onImageDownloaded();
+
+        void on_actionheadOne_triggered();
+        void on_actionheadTwo_triggered();
+        void on_actionheadThree_triggered();
+        void on_actionbold_triggered();
+        void on_actionimg_triggered();
+
         void on_actionFileOpen_triggered();
         void on_actionFileSave_triggered();
         void on_actionExit_triggered();
         void on_actionAbout_triggered();       
         void on_actionPrint_triggered();
         void on_actionTohtml_triggered();
-        void on_actionimg_triggered();
+
 private:
 };
 
