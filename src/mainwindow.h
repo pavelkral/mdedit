@@ -72,7 +72,13 @@ private slots:
         void on_actionheadTwo_triggered();
         void on_actionheadThree_triggered();
         void on_actionbold_triggered();
+        void on_actionitalic_triggered();
+        void on_actionp_triggered();
+        void on_actionlink_triggered();
+        void on_actionul_triggered();
+        void on_actioncode_triggered();
         void on_actionimg_triggered();
+        void on_actionvideo_triggered();
 
         void on_actionFileOpen_triggered();
         void on_actionFileSave_triggered();

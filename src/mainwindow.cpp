@@ -112,16 +112,7 @@ void MainWindow::on_actionheadOne_triggered() {
         cursor.insertText(newText);
     }
 }
-void MainWindow::on_actionimg_triggered() {
 
-    ui.ted->moveCursor(QTextCursor::End);
-
-    ui.ted->insertPlainText(
-        R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='https://www.pavelkral.net/images/aplication/min/min_qmetronom.png' /></p><p></p>)");
-
-    ui.ted->moveCursor(QTextCursor::End);
-
-}
 void MainWindow::on_actionheadTwo_triggered()
 {
     QTextCursor cursor = ui.ted->textCursor();
@@ -153,8 +144,104 @@ void MainWindow::on_actionbold_triggered()
     if (cursor.hasSelection()) {
 
         QString selectedText = cursor.selectedText();
-        QString newText = QString("<b> %1 </b>").arg(selectedText);
+        QString newText = QString("**%1**  \n").arg(selectedText);
         cursor.insertText(newText);
+        cursor.movePosition(QTextCursor::End);
+        ui.ted->setTextCursor(cursor);
+    }
+}
+
+void MainWindow::on_actionitalic_triggered()
+{
+    QTextCursor cursor = ui.ted->textCursor();
+
+    if (cursor.hasSelection()) {
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString("*%1*  \n").arg(selectedText);
+        cursor.insertText(newText);
+        cursor.movePosition(QTextCursor::End);
+        ui.ted->setTextCursor(cursor);
+    }
+}
+
+void MainWindow::on_actionp_triggered()
+{
+    QTextCursor cursor = ui.ted->textCursor();
+
+    if (cursor.hasSelection()) {
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString("<p>%</p>  \n").arg(selectedText);
+        cursor.insertText(newText);
+        cursor.movePosition(QTextCursor::End);
+        ui.ted->setTextCursor(cursor);
+    }
+}
+
+void MainWindow::on_actionlink_triggered()
+{
+    QTextCursor cursor = ui.ted->textCursor();
+
+    if (cursor.hasSelection()) {
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString("[%1](%1)  \n").arg(selectedText);
+        cursor.insertText(newText);
+        cursor.movePosition(QTextCursor::End);
+        ui.ted->setTextCursor(cursor);
+    }
+}
+
+void MainWindow::on_actionul_triggered()
+{
+    QTextCursor cursor = ui.ted->textCursor();
+
+    if (cursor.hasSelection()) {
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString("- %1  \n").arg(selectedText);
+        cursor.insertText(newText);
+        cursor.movePosition(QTextCursor::End);
+        ui.ted->setTextCursor(cursor);
+    }
+}
+
+void MainWindow::on_actioncode_triggered()
+{
+    QTextCursor cursor = ui.ted->textCursor();
+
+    if (cursor.hasSelection()) {
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString("```%1```  \n").arg(selectedText);
+        cursor.insertText(newText);
+        cursor.movePosition(QTextCursor::End);
+        ui.ted->setTextCursor(cursor);
+    }
+}
+void MainWindow::on_actionimg_triggered() {
+
+    ui.ted->moveCursor(QTextCursor::End);
+
+    ui.ted->insertPlainText(
+        R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='https://www.pavelkral.net/images/aplication/min/min_qmetronom.png' /></p><p></p>)");
+
+    ui.ted->moveCursor(QTextCursor::End);
+
+}
+// todo add yotube for blog
+void MainWindow::on_actionvideo_triggered()
+{
+    QTextCursor cursor = ui.ted->textCursor();
+
+    if (cursor.hasSelection()) {
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString("**%1**  \n").arg(selectedText);
+        cursor.insertText(newText);
+        cursor.movePosition(QTextCursor::End);
+        ui.ted->setTextCursor(cursor);
     }
 }
 void MainWindow::on_actionTohtml_triggered() {
