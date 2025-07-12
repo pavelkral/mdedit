@@ -92,7 +92,7 @@ QString QStringConvertor::addHtmlHeader(QString &str)
     //QMessageBox::information(this, "info"," tags ");
     qDebug() << "ok";
     QString st = str;
-    st.replace(QString("\n"), QString("\n<br />"));
+   // st.replace(QString("\n"), QString("\n<br />"));
     st.prepend( "<!DOCTYPE HTML PUBLIC-//W3C//DTD HTML 4.01 Transitional//EN>\n<html>\n<head><title>title</title>\n<link href=styl2.css rel=stylesheet type=text/css />\n<META http-equiv=content-type content=text/html; charset=windows-1250>\n<META http-equiv=Content-language content=cs>\n</head>\n<body>\n" );
     st.append( "\n</body>\n</html>" );
     return st;

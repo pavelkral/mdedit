@@ -67,7 +67,7 @@ qt_generate_deploy_app_script(
 install(SCRIPT ${deploy_script})
 
 
-# libs debug
+# debug
 # message(STATUS "Qt6_DIR: ${Qt6_DIR}")
 # message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 # message(STATUS "CMAKE_AUTOMOC: ${CMAKE_AUTOMOC}")
