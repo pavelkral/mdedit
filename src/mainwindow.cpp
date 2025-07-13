@@ -9,6 +9,7 @@
 #include <QNetworkRequest>
 #include <QPrintDialog>
 #include <QPrinter>
+#include <QInputDialog>
 #include <QRegularExpression>
 
 extern "C" {
@@ -224,8 +225,27 @@ void MainWindow::on_actionimg_triggered() {
 
     ui.ted->moveCursor(QTextCursor::End);
 
-    ui.ted->insertPlainText(
-        R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='https://www.pavelkral.net/images/aplication/min/min_qmetronom.png' /></p><p></p>)");
+    QTextCursor cursor = ui.ted->textCursor();
+   // cursor.insertText(R"(<img src='' alt=''>)");
+   // cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
+
+    QString table_name = "New";
+    bool ok;
+    table_name = QInputDialog::getText ( this, tr ( "New group" ),
+                                       tr ( "Enter the group name:" ), QLineEdit::Normal,
+                                       table_name, &ok );
+    if ( ok && !table_name.isEmpty() )
+    {
+        ui.ted->insertPlainText(
+            R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='https://www.pavelkral.net/images/aplication/min/min_qmetronom.png' /></p><p></p>)");
+
+
+    }
+    else
+    {
+        // QMessageBox::information(this, "info"," You must entrer group name");
+    }
+
 
     //ui.ted->moveCursor(QTextCursor::End);
 
