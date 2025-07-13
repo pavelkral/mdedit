@@ -229,15 +229,21 @@ void MainWindow::on_actionimg_triggered() {
    // cursor.insertText(R"(<img src='' alt=''>)");
    // cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
 
-    QString table_name = "New";
-    bool ok;
-    table_name = QInputDialog::getText ( this, tr ( "New group" ),
+
+    QString url = "https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";
+    bool succes;
+    url = QInputDialog::getText ( this, tr ( "New group" ),
                                        tr ( "Enter the group name:" ), QLineEdit::Normal,
-                                       table_name, &ok );
-    if ( ok && !table_name.isEmpty() )
+                                       url, &succes );
+
+    if ( succes && !url.isEmpty() )
     {
-        ui.ted->insertPlainText(
-            R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='https://www.pavelkral.net/images/aplication/min/min_qmetronom.png' /></p><p></p>)");
+
+        QString selectedText = cursor.selectedText();
+        QString newText = QString(R"(<p style="text-align: center;">
+            <img style="margin:2px auto;width:100%;" src='%1' /></p><p></p>)").arg(url);
+        cursor.insertText(newText);
+
 
 
     }
