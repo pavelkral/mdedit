@@ -63,8 +63,14 @@
     </property>
     <addaction name="actionTohtml"/>
    </widget>
+   <widget class="QMenu" name="menuExport">
+    <property name="title">
+     <string>Export</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuExport"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -270,7 +276,7 @@
   </action>
   <action name="actionp">
    <property name="icon">
-    <iconset resource="../../resource/wedit.qrc">
+    <iconset>
      <normaloff>:/icons/p.png</normaloff>:/icons/p.png</iconset>
    </property>
    <property name="text">

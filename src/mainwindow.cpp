@@ -268,8 +268,7 @@ void MainWindow::on_actionimg_triggered() {
 
     if ( succes && !url.isEmpty() ){
         QString selectedText = cursor.selectedText();
-        QString newText = QString(R"(<p style="text-align: center;">
-            <img style="margin:2px auto;width:100%;" src='%1' /></p><p></p>)").arg(url);
+        QString newText = QString(R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='%1' /></p>)").arg(url);
         cursor.insertText(newText);
     }
     else
