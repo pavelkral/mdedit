@@ -38,10 +38,13 @@
 #define MAINWINDOW_H
  
 #include "ui_mainwindow.h"
-
 #include <QMainWindow>
+
 class QNetworkAccessManager;
 class QNetworkReply;
+class HtmlHighlighter;
+class MarkdownHighlighter;
+
 
 class MainWindow : public QMainWindow
 {
@@ -58,6 +61,8 @@ virtual ~MainWindow();
 private:
 
     QNetworkAccessManager *networkManager;
+    HtmlHighlighter *highlighter;
+    MarkdownHighlighter *mdhighlighter;
     QSet<QUrl> downloadedImageUrls;
     void findAndDownloadImages(const QString &html);
 

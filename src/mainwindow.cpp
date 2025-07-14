@@ -11,6 +11,9 @@
 #include <QPrinter>
 #include <QInputDialog>
 #include <QRegularExpression>
+#include "htmlhighlighter.h"
+#include "markdownhighlighter.h"
+
 
 extern "C" {
 #include "cmark.h"
@@ -26,6 +29,8 @@ MainWindow::MainWindow() {
     updatePreview();
     networkManager = new QNetworkAccessManager(this);
     resize(1280,720);
+    highlighter = new HtmlHighlighter(ui.textEditHtml->document());
+    mdhighlighter = new MarkdownHighlighter(ui.ted->document());
 }
 
 MainWindow::~MainWindow() {
@@ -223,11 +228,11 @@ void MainWindow::on_actioncode_triggered()
 }
 void MainWindow::on_actionimg_triggered() {
 
-    ui.ted->moveCursor(QTextCursor::End);
+    //ui.ted->moveCursor(QTextCursor::End);
 
     QTextCursor cursor = ui.ted->textCursor();
    // cursor.insertText(R"(<img src='' alt=''>)");
-   // cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
+    //cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
 
 
     QString url = "https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";

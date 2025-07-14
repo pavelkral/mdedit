@@ -34,6 +34,8 @@ qt_add_executable(wedit
     .gitignore LICENSE.txt
     src/qstringconvertor.h
     src/qstringconvertor.cpp
+    src/htmlhighlighter.h src/htmlhighlighter.cpp
+    src/markdownhighlighter.h src/markdownhighlighter.cpp
 )
 
 
