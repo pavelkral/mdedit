@@ -1,6 +1,6 @@
 
 #include "mainwindow.h"
-#include "qstringconvertor.h"
+
 #include <QFileDialog>
 #include <QIcon>
 #include <QMessageBox>
@@ -13,7 +13,7 @@
 #include <QRegularExpression>
 #include "htmlhighlighter.h"
 #include "markdownhighlighter.h"
-
+#include "qstringconvertor.h"
 
 extern "C" {
 #include "cmark.h"
@@ -44,6 +44,34 @@ void MainWindow::updatePreview() {
     ui.textEditPreview->setStyleSheet("h1 { color: red; } ul { color: black; } em { font-style: italic; }");
     findAndDownloadImages(htmlText);
 
+}
+QString MainWindow::convertMarkdownToHtml(const QString &markdown) {
+    QByteArray markdownBytes = markdown.toUtf8();
+
+    int options = CMARK_OPT_DEFAULT | CMARK_OPT_UNSAFE | CMARK_OPT_SMART;
+
+    cmark_node *doc = cmark_parse_document(markdownBytes.constData(),
+                                           markdownBytes.length(), options);
+
+    if (!doc) {
+        qWarning() << "cmark_parse_document failed to parse Markdown.";
+        return QString();
+    }
+
+    char *htmlCStr = cmark_render_html(doc, options);
+
+    if (!htmlCStr) {
+        qWarning() << "cmark_render_html failed to render HTML.";
+        cmark_node_free(doc);
+        return QString();
+    }
+
+    QString htmlResult = QString::fromUtf8(htmlCStr);
+
+    free(htmlCStr);
+    cmark_node_free(doc);
+
+    return htmlResult;
 }
 void MainWindow::findAndDownloadImages(const QString &html)
 {
@@ -228,37 +256,27 @@ void MainWindow::on_actioncode_triggered()
 }
 void MainWindow::on_actionimg_triggered() {
 
-    //ui.ted->moveCursor(QTextCursor::End);
 
     QTextCursor cursor = ui.ted->textCursor();
    // cursor.insertText(R"(<img src='' alt=''>)");
     //cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
-
-
     QString url = "https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";
     bool succes;
     url = QInputDialog::getText ( this, tr ( "New group" ),
                                        tr ( "Enter the group name:" ), QLineEdit::Normal,
                                        url, &succes );
 
-    if ( succes && !url.isEmpty() )
-    {
-
+    if ( succes && !url.isEmpty() ){
         QString selectedText = cursor.selectedText();
         QString newText = QString(R"(<p style="text-align: center;">
             <img style="margin:2px auto;width:100%;" src='%1' /></p><p></p>)").arg(url);
         cursor.insertText(newText);
-
-
-
     }
     else
     {
-        // QMessageBox::information(this, "info"," You must entrer group name");
+        // QMessageBox::information(this, "info"," You must entrer url");
     }
 
-
-    //ui.ted->moveCursor(QTextCursor::End);
 
 }
 // todo add yotube for blog
@@ -283,34 +301,7 @@ void MainWindow::on_actionTohtml_triggered() {
 }
 
 
-QString MainWindow::convertMarkdownToHtml(const QString &markdown) {
-    QByteArray markdownBytes = markdown.toUtf8();
 
-    int options = CMARK_OPT_DEFAULT | CMARK_OPT_UNSAFE | CMARK_OPT_SMART;
-
-    cmark_node *doc = cmark_parse_document(markdownBytes.constData(),
-                                           markdownBytes.length(), options);
-
-    if (!doc) {
-        qWarning() << "cmark_parse_document failed to parse Markdown.";
-        return QString();
-    }
-
-    char *htmlCStr = cmark_render_html(doc, options);
-
-    if (!htmlCStr) {
-        qWarning() << "cmark_render_html failed to render HTML.";
-        cmark_node_free(doc);
-        return QString();
-    }
-
-    QString htmlResult = QString::fromUtf8(htmlCStr);
-
-    free(htmlCStr);
-    cmark_node_free(doc);
-
-    return htmlResult;
-}
 
 void MainWindow::on_actionFileOpen_triggered() {
     // QMessageBox::information(this, "info","OPEN ");
