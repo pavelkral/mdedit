@@ -31,6 +31,20 @@ MainWindow::MainWindow() {
     resize(1280,720);
     highlighter = new HtmlHighlighter(ui.textEditHtml->document());
     mdhighlighter = new MarkdownHighlighter(ui.ted->document());
+    ui.ted->setPlainText(
+        "# First level heading\n\n"
+        "This is *italics* and this is **bold** text.\n\n"
+        "## Subheading\n\n"
+        "- List item 1\n- List item 2\n\n"
+        "Link to [Qt framework](https://www.qt.io/).\n\n"
+        "![Image from web](https://placehold.co/400x200/28A745/FFFFFF?text=Web+Image)\n\n"
+        "Inline code: `int main() {}`\n\n"
+        "```cpp\n"
+        "// Code block\n"
+        "int x = 5;\n"
+        "```\n"
+        );
+    updatePreview();
 }
 
 MainWindow::~MainWindow() {

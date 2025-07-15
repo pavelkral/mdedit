@@ -8,7 +8,7 @@ HtmlHighlighter::HtmlHighlighter(QTextDocument *parent)
 
     // 1. Pravidlo pro HTML tagy (např. <h1>, </p>)
     QTextCharFormat tagFormat;
-    tagFormat.setForeground(Qt::blue);
+    tagFormat.setForeground(QColor(255, 140, 0));
     tagFormat.setFontWeight(QFont::Bold);
     rule.pattern = QRegularExpression(R"(</?\w+.*?>)"); // Zjednodušený výraz pro tagy
     rule.format = tagFormat;
@@ -24,7 +24,7 @@ HtmlHighlighter::HtmlHighlighter(QTextDocument *parent)
 
     // 3. Pravidlo pro hodnoty v uvozovkách
     QTextCharFormat quotationFormat;
-    quotationFormat.setForeground(Qt::red);
+    quotationFormat.setForeground(QColor(0, 128, 128));
     rule.pattern = QRegularExpression(R"(".+?")"); // Nekonzumní (non-greedy)
     rule.format = quotationFormat;
     highlightingRules.append(rule);

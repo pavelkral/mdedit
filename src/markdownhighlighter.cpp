@@ -6,16 +6,24 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
 {
     HighlightingRule rule;
 
-    // Nadpisy (#, ##, ...)
+    // Nadpisy (#, ##, ...) - celý řádek
     QTextCharFormat headingFormat;
-    headingFormat.setForeground(Qt::blue);
+    headingFormat.setForeground(QColor(255, 140, 0)); // Tmavě oranžová
     headingFormat.setFontWeight(QFont::Bold);
-    rule.pattern = QRegularExpression(R"(^#{1,6}\s)");
+    rule.pattern = QRegularExpression(R"(^#{1,6}.*$)");
     rule.format = headingFormat;
+    highlightingRules.append(rule);
+
+    // Položky seznamu (- text)
+    QTextCharFormat listFormat;
+    listFormat.setForeground(QColor(139, 69, 19)); // Hnědá
+    rule.pattern = QRegularExpression(R"(^\s*-\s.*$)");
+    rule.format = listFormat;
     highlightingRules.append(rule);
 
     // Tučné písmo (**text** nebo __text__)
     QTextCharFormat boldFormat;
+    boldFormat.setForeground(QColor(255, 140, 0));
     boldFormat.setFontWeight(QFont::Bold);
     rule.pattern = QRegularExpression(R"((\*\*|__)(?=\S)(.+?)(?<=\S)\1)");
     rule.format = boldFormat;
@@ -23,9 +31,17 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
 
     // Kurzíva (*text* nebo _text_)
     QTextCharFormat italicFormat;
+    italicFormat.setForeground(QColor(255, 140, 0));
     italicFormat.setFontItalic(true);
     rule.pattern = QRegularExpression(R"((\*|_)(?=\S)(.+?)(?<=\S)\1)");
     rule.format = italicFormat;
+    highlightingRules.append(rule);
+
+    // Obrázky ![text](url)
+    QTextCharFormat imageFormat;
+    imageFormat.setForeground(Qt::magenta);
+    rule.pattern = QRegularExpression(R"(!\[([^\]]*)\]\(([^)]+)\))");
+    rule.format = imageFormat;
     highlightingRules.append(rule);
 
     // Odkazy ([text](url))
@@ -38,18 +54,20 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
 
     // Inline kód (`code`)
     QTextCharFormat inlineCodeFormat;
-    inlineCodeFormat.setBackground(QColor(230, 230, 230));
+    inlineCodeFormat.setForeground(QColor(255, 140, 0));
     inlineCodeFormat.setFontFamily("Courier");
     rule.pattern = QRegularExpression(R"(`[^`]+`)");
     rule.format = inlineCodeFormat;
     highlightingRules.append(rule);
 
     // Bloky kódu (```)
-    codeBlockFormat.setBackground(QColor(240, 240, 240));
+    //codeBlockFormat.setBackground(QColor(240, 240, 240));
+    codeBlockFormat.setForeground(Qt::darkGreen);
     codeBlockFormat.setFontFamily("Courier");
     codeBlockStartExpression = QRegularExpression(R"(^```)");
     codeBlockEndExpression = QRegularExpression(R"(^```$)");
 }
+
 
 void MarkdownHighlighter::highlightBlock(const QString &text)
 {
