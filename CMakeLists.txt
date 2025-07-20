@@ -26,16 +26,17 @@ qt_add_executable(wedit
     #WIN32 MACOSX_BUNDLE
     src/mainwindow.cpp
     src/mainwindow.h
-    src/main.cpp  
+    src/main.cpp
+    src/qstringconvertor.h
+    src/qstringconvertor.cpp
+    src/htmlhighlighter.h src/htmlhighlighter.cpp
+    src/markdownhighlighter.h src/markdownhighlighter.cpp
     src/forms/mainwindow.ui
     resource/wedit.qrc
     resource/wedit.rc
     README.md
     .gitignore LICENSE.txt
-    src/qstringconvertor.h
-    src/qstringconvertor.cpp
-    src/htmlhighlighter.h src/htmlhighlighter.cpp
-    src/markdownhighlighter.h src/markdownhighlighter.cpp
+
 )
 
 

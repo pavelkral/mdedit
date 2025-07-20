@@ -14,14 +14,18 @@ It is not feature complete and it is not tested on all platforms.
 - CMAKE
 - cmark
 
-### Build Steps
+### Build Steps camke
 ```
-mkdir build
-cd build
-cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH="C:/Qt/6.9/msvc2019_64" -DCMAKE_BUILD_TYPE=Release
-cmake --build . -- -j8
+$ mkdir build
+$ cd build
+$ cmake --build . -- -j8
 ```
 
+### Build Steps qmake
+```
+$ qmake
+$ make
+```
 
 
 ## References
