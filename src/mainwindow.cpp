@@ -31,6 +31,7 @@ MainWindow::MainWindow() {
     resize(1280,720);
     highlighter = new HtmlHighlighter(ui.textEditHtml->document());
     mdhighlighter = new MarkdownHighlighter(ui.ted->document());
+
     ui.ted->setPlainText(
         "# First level heading\n\n"
         "This is *italics* and this is **bold** text.\n\n"
@@ -44,6 +45,7 @@ MainWindow::MainWindow() {
         "int x = 5;\n"
         "```\n"
         );
+
     updatePreview();
 }
 
@@ -87,6 +89,9 @@ QString MainWindow::convertMarkdownToHtml(const QString &markdown) {
 
     return htmlResult;
 }
+
+//===========================================image functions===========================================
+
 void MainWindow::findAndDownloadImages(const QString &html)
 {
     QRegularExpression imgRegex("<img[^>]+src=[\"'](https?://[^\"']+)[\"'][^>]*>");
@@ -124,11 +129,13 @@ void MainWindow::onImageDownloaded() {
     qDebug() << "Downloaded:" << url.toString();
 
     ui.textEditPreview->document()->addResource(QTextDocument::ImageResource, url, QVariant(data));
+    updatePreview();
 
     reply->deleteLater(); //
 }
 
 void MainWindow::insertImageProgrammatically() {
+
     QString imagePath = QFileDialog::getOpenFileName(
         this, "Img select", "", "format (*.png *.jpg *.jpeg *.bmp *.gif)");
 
@@ -148,7 +155,7 @@ void MainWindow::insertImageProgrammatically() {
 
     cursor.insertImage(imageFormat);
 }
-//.......................................................................................
+//===========================================md functions===========================================
 
 void MainWindow::on_actionheadOne_triggered() {
     QTextCursor cursor = ui.ted->textCursor();
@@ -313,11 +320,23 @@ void MainWindow::on_actionTohtml_triggered() {
     ui.ted->setPlainText(htmlText);
 }
 
+void MainWindow::on_actionRedo_triggered()
+{
+   ui.ted->redo();
+}
 
-
-
+void MainWindow::on_actionUndo_triggered()
+{
+  ui.ted->undo();
+}
+//===========================================file functions===========================================
+void MainWindow::updateStatusBar()
+{
+    statusBar()->showMessage(currentFile);
+}
 void MainWindow::on_actionFileOpen_triggered() {
-    // QMessageBox::information(this, "info","OPEN ");
+
+    /*
     QString filename = QFileDialog::getOpenFileName(
         this, tr("Open File"), "/home", tr("Text files (*.*)"));
 
@@ -330,21 +349,61 @@ void MainWindow::on_actionFileOpen_triggered() {
                 ui.ted->setPlainText(str);
             } else {
                 str = QString::fromLocal8Bit(data);
-                ui.ted->setPlainText(str);
+
             }
         }
     }
+    */
+   // QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("Text files (*.*)"));
+
+    QString fileName = QFileDialog::getOpenFileName(this, "Open File", "", "Text Files (*.*);;All Files (*)");
+    if (!fileName.isEmpty()) {
+        QFile file(fileName);
+        if (file.open(QFile::ReadOnly | QFile::Text)) {
+            QTextStream in(&file);
+            QString text = in.readAll();
+            ui.ted->setPlainText(text);
+            file.close();
+            currentFile = fileName;
+            updateStatusBar();
+        } else {
+            QMessageBox::warning(this, "Error", "Could not open file.");
+        }
+    }
+
 }
 void MainWindow::on_actionFileSave_triggered() {
+    if (currentFile.isEmpty()) {
+        on_actionFileSaveAs_triggered() ;
+        return;
+    }
 
-    QString stt = QFileDialog::getSaveFileName(this, tr("Save As "), "/home",
-                                               tr("Text files (*.html )"));
-    QFile file(stt);
+    QFile file(currentFile);
+    if (file.open(QFile::WriteOnly | QFile::Text)) {
+        QTextStream out(&file);
+        out << ui.ted->toPlainText();
+        file.close();
+        updateStatusBar();
+    } else {
+        QMessageBox::warning(this, "Error", "Could not save file.");
+    }
+}
+
+void MainWindow::on_actionFileSaveAs_triggered() {
+
+    //QString stt = QFileDialog::getSaveFileName(this, tr("Save As "), "/home",
+                                              // tr("Text files (*.html )"));
+
+     QString fileName = QFileDialog::getSaveFileName(this, "Save File As", "",
+                                                    "Text Files (*.MD);;All Files (*)");
+    currentFile = fileName;
+    QFile file(fileName);
     if (file.open(QFile::WriteOnly)) {
         QTextStream stream(&file);
         stream.setEncoding(QStringConverter::Utf8);
         stream << ui.ted->toPlainText();
         file.close();
+        updateStatusBar();
     }
 }
 void MainWindow::on_actionExit_triggered() {

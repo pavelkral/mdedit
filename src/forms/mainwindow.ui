@@ -46,6 +46,7 @@
     <addaction name="actionFileOpen"/>
     <addaction name="separator"/>
     <addaction name="actionFileSave"/>
+    <addaction name="actionFileSaveAs"/>
     <addaction name="actionPrint"/>
     <addaction name="actionExit"/>
    </widget>
@@ -61,12 +62,14 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionTohtml"/>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
    </widget>
    <widget class="QMenu" name="menuExport">
     <property name="title">
      <string>Export</string>
     </property>
+    <addaction name="actionTohtml"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -99,7 +102,7 @@
     <string>Open</string>
    </property>
   </action>
-  <action name="actionFileSave">
+  <action name="actionFileSaveAs">
    <property name="text">
     <string>SaveAs</string>
    </property>
@@ -284,6 +287,33 @@
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;p&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionFileSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Redo</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

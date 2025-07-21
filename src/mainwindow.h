@@ -24,13 +24,13 @@ public:
 
 virtual ~MainWindow();
 private:
-
+    QString currentFile;
     QNetworkAccessManager *networkManager;
     HtmlHighlighter *highlighter;
     MarkdownHighlighter *mdhighlighter;
     QSet<QUrl> downloadedImageUrls;
     void findAndDownloadImages(const QString &html);
-
+    void updateStatusBar();
 protected:
 
 private slots:
@@ -51,11 +51,14 @@ private slots:
         void on_actionvideo_triggered();
 
         void on_actionFileOpen_triggered();
+        void on_actionFileSaveAs_triggered();
         void on_actionFileSave_triggered();
         void on_actionExit_triggered();
         void on_actionAbout_triggered();       
         void on_actionPrint_triggered();
         void on_actionTohtml_triggered();
+        void on_actionRedo_triggered();
+        void on_actionUndo_triggered();
 
 private:
 };
