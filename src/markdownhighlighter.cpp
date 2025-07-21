@@ -6,7 +6,7 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
 {
     HighlightingRule rule;
 
-    // Nadpisy (#, ##, ...) - celý řádek
+    // headings (#, ##, ...) -
     QTextCharFormat headingFormat;
     headingFormat.setForeground(QColor(255, 140, 0)); // Tmavě oranžová
     headingFormat.setFontWeight(QFont::Bold);
@@ -14,14 +14,14 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
     rule.format = headingFormat;
     highlightingRules.append(rule);
 
-    // Položky seznamu (- text)
+    // list (- text)
     QTextCharFormat listFormat;
     listFormat.setForeground(QColor(139, 69, 19)); // Hnědá
     rule.pattern = QRegularExpression(R"(^\s*-\s.*$)");
     rule.format = listFormat;
     highlightingRules.append(rule);
 
-    // Tučné písmo (**text** nebo __text__)
+    // bold (**text** nebo __text__)
     QTextCharFormat boldFormat;
     boldFormat.setForeground(QColor(255, 140, 0));
     boldFormat.setFontWeight(QFont::Bold);
@@ -29,7 +29,7 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
     rule.format = boldFormat;
     highlightingRules.append(rule);
 
-    // Kurzíva (*text* nebo _text_)
+    // italic (*text* nebo _text_)
     QTextCharFormat italicFormat;
     italicFormat.setForeground(QColor(255, 140, 0));
     italicFormat.setFontItalic(true);
@@ -37,14 +37,14 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
     rule.format = italicFormat;
     highlightingRules.append(rule);
 
-    // Obrázky ![text](url)
+    // img ![text](url)
     QTextCharFormat imageFormat;
     imageFormat.setForeground(Qt::magenta);
     rule.pattern = QRegularExpression(R"(!\[([^\]]*)\]\(([^)]+)\))");
     rule.format = imageFormat;
     highlightingRules.append(rule);
 
-    // Odkazy ([text](url))
+    // links ([text](url))
     QTextCharFormat linkFormat;
     linkFormat.setForeground(Qt::darkCyan);
     linkFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
@@ -52,7 +52,7 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
     rule.format = linkFormat;
     highlightingRules.append(rule);
 
-    // Inline kód (`code`)
+    // inline code (`code`)
     QTextCharFormat inlineCodeFormat;
     inlineCodeFormat.setForeground(QColor(255, 140, 0));
     inlineCodeFormat.setFontFamily("Courier");
@@ -60,7 +60,7 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
     rule.format = inlineCodeFormat;
     highlightingRules.append(rule);
 
-    // Bloky kódu (```)
+    // code block (```)
     //codeBlockFormat.setBackground(QColor(240, 240, 240));
     codeBlockFormat.setForeground(Qt::darkGreen);
     codeBlockFormat.setFontFamily("Courier");
@@ -71,7 +71,7 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
 
 void MarkdownHighlighter::highlightBlock(const QString &text)
 {
-    for (const HighlightingRule &rule : highlightingRules) {
+    for (const HighlightingRule &rule : std::as_const( highlightingRules)) {
         QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
         while (matchIterator.hasNext()) {
             QRegularExpressionMatch match = matchIterator.next();

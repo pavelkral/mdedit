@@ -32,6 +32,8 @@ MainWindow::MainWindow() {
     highlighter = new HtmlHighlighter(ui.textEditHtml->document());
     mdhighlighter = new MarkdownHighlighter(ui.ted->document());
 
+    connect(ui.actionFileOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
+
     ui.ted->setPlainText(
         "# First level heading\n\n"
         "This is *italics* and this is **bold** text.\n\n"
@@ -94,7 +96,7 @@ QString MainWindow::convertMarkdownToHtml(const QString &markdown) {
 
 void MainWindow::findAndDownloadImages(const QString &html)
 {
-    QRegularExpression imgRegex("<img[^>]+src=[\"'](https?://[^\"']+)[\"'][^>]*>");
+    static const QRegularExpression imgRegex("<img[^>]+src=[\"'](https?://[^\"']+)[\"'][^>]*>");
     auto matches = imgRegex.globalMatch(html);
 
     while (matches.hasNext()) {
@@ -334,7 +336,7 @@ void MainWindow::updateStatusBar()
 {
     statusBar()->showMessage(currentFile);
 }
-void MainWindow::on_actionFileOpen_triggered() {
+void MainWindow::onFileOpen() {
 
     /*
     QString filename = QFileDialog::getOpenFileName(
@@ -354,7 +356,6 @@ void MainWindow::on_actionFileOpen_triggered() {
         }
     }
     */
-   // QString filename = QFileDialog::getOpenFileName(this, tr("Open File"), "/home", tr("Text files (*.*)"));
 
     QString fileName = QFileDialog::getOpenFileName(this, "Open File", "", "Text Files (*.*);;All Files (*)");
     if (!fileName.isEmpty()) {

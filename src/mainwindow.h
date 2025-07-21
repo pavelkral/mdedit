@@ -37,7 +37,7 @@ private slots:
 
         void updatePreview();
         void onImageDownloaded();
-
+        // todo remove old style connection
         void on_actionheadOne_triggered();
         void on_actionheadTwo_triggered();
         void on_actionheadThree_triggered();
@@ -50,7 +50,8 @@ private slots:
         void on_actionimg_triggered();
         void on_actionvideo_triggered();
 
-        void on_actionFileOpen_triggered();
+        void onFileOpen();
+
         void on_actionFileSaveAs_triggered();
         void on_actionFileSave_triggered();
         void on_actionExit_triggered();

@@ -23,8 +23,6 @@ private:
         QTextCharFormat format;
     };
     QVector<HighlightingRule> highlightingRules;
-
-    // Pravidla pro víceřádkové komentáře
     QRegularExpression commentStartExpression;
     QRegularExpression commentEndExpression;
     QTextCharFormat multiLineCommentFormat;

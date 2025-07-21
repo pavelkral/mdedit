@@ -8,22 +8,21 @@ QString QStringConvertor::mdToHtml(QString &S) {
 
     QString html = S;
 
-    // --- 1.code---
+    // --- code block---
     // ```
     // code
     // ```
-    //  (\\s*(\\S*)?): \S* = libovolný ne-mezerový znak
-    // (.*?) = lazy
-    QRegularExpression codeBlockRegExp(
+    //  (\\s*(\\S*)?): \S* = charter // (.*?) = lazy
+    static const QRegularExpression codeBlockRegExp(
         "```\\s*(\\S*)?\n(.*?)```",
         QRegularExpression::DotMatchesEverythingOption);
 
     QRegularExpressionMatchIterator i = codeBlockRegExp.globalMatch(html);
-
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
         QString fullMatch = match.captured(0); // Celá shoda (```...```)
-        QString language = match.captured(1); // Zachycený jazyk (např. "cpp", "python")
+        QString language =
+            match.captured(1); // Zachycený jazyk (např. "cpp", "python")
         QString codeContent = match.captured(2); // Samotný kód
 
         QString classAttr = "";
@@ -32,16 +31,14 @@ QString QStringConvertor::mdToHtml(QString &S) {
         }
 
         QString replacement = QString("<pre><code%1>%2</code></pre>")
-                                  .arg(classAttr)
-                                  .arg(codeContent.toHtmlEscaped()); // escape HTML
-
+                                  .arg(classAttr, codeContent.toHtmlEscaped());
+        // escape HTML
         html.replace(fullMatch, replacement);
     }
-
-    // --- 2. Inline  ---
+    // --- code  ---
     // `code`
     // Toto musí být až PO parsování víceřádkových bloků!
-    QRegularExpression inlineCodeRegExp("`(.*?)`");
+    static const QRegularExpression inlineCodeRegExp("`(.*?)`");
     html.replace(inlineCodeRegExp, "<code>\\1</code>");
     // --- 1. Nadpisy (H3 -> H1) ---H3 (### Text)
     html.replace(
@@ -53,7 +50,6 @@ QString QStringConvertor::mdToHtml(QString &S) {
     html.replace(
         QRegularExpression("^#\\s*(.*)$", QRegularExpression::MultilineOption),
         "<h1>\\1</h1>");
-
     // --- 2. bold ---
     // **text** / __text__
     html.replace(QRegularExpression("\\*\\*(.*?)\\*\\*|__(.*?)__"),
@@ -63,22 +59,15 @@ QString QStringConvertor::mdToHtml(QString &S) {
     html.replace(QRegularExpression("(?<!\\*)\\*(?!\\*)(.*?)(?<!\\*)\\*(?!\\*)|(?"
                                     "<!_)(?!__)_(.*?)(?<!_)_(?!__)"),
                  "<em>\\1\\2</em>");
-
     // 4 link
     // [text](url)
     html.replace(QRegularExpression("\\[(.*?)\\]\\((.*?)\\)"),
                  "<a href=\"\\2\">\\1</a>");
-
-    // 5 In-line  ---
-    // `kód`
-    // html.replace(QRegularExpression("`(.*?)`"), "<code>\\1</code>")
-
-
     // --- 6. S (ul) ---
     // Najdeme všechny řádky začínající - nebo *
     QStringList listItems;
-    QRegularExpression listItemRegExp("^\\s*[-*]\\s*(.*)$",
-                                      QRegularExpression::MultilineOption);
+    static const QRegularExpression listItemRegExp(
+        "^\\s*[-*]\\s*(.*)$", QRegularExpression::MultilineOption);
     QRegularExpressionMatchIterator it = listItemRegExp.globalMatch(html);
     while (it.hasNext()) {
         QRegularExpressionMatch match = it.next();

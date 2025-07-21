@@ -17,13 +17,13 @@ protected:
     void highlightBlock(const QString &text) override;
 
 private:
+
     struct HighlightingRule
     {
         QRegularExpression pattern;
         QTextCharFormat format;
     };
     QVector<HighlightingRule> highlightingRules;
-
     QRegularExpression codeBlockStartExpression;
     QRegularExpression codeBlockEndExpression;
     QTextCharFormat codeBlockFormat;
