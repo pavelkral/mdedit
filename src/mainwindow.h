@@ -51,15 +51,14 @@ private slots:
         void on_actionvideo_triggered();
 
         void onFileOpen();
-
-        void on_actionFileSaveAs_triggered();
-        void on_actionFileSave_triggered();
-        void on_actionExit_triggered();
-        void on_actionAbout_triggered();       
-        void on_actionPrint_triggered();
-        void on_actionTohtml_triggered();
-        void on_actionRedo_triggered();
-        void on_actionUndo_triggered();
+        void onFileSaveAs();
+        void onFileSave();
+        void onExit();
+        void onAbout();       
+        void onPrint();
+        void onToHtml();
+        void onRedo();
+        void onUndo();
 
 private:
 };

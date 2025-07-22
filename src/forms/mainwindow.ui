@@ -69,7 +69,7 @@
     <property name="title">
      <string>Export</string>
     </property>
-    <addaction name="actionTohtml"/>
+    <addaction name="actionToHtml"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -115,11 +115,6 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
-   </property>
-  </action>
-  <action name="actionTohtml">
-   <property name="text">
-    <string>Convert to html</string>
    </property>
   </action>
   <action name="actionPrint">
@@ -317,6 +312,11 @@
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionToHtml">
+   <property name="text">
+    <string>To Html</string>
    </property>
   </action>
  </widget>

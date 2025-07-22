@@ -33,6 +33,29 @@ MainWindow::MainWindow() {
     mdhighlighter = new MarkdownHighlighter(ui.ted->document());
 
     connect(ui.actionFileOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
+    connect(ui.actionFileSave, &QAction::triggered, this, &MainWindow::onFileSave);
+    connect(ui.actionFileSaveAs, &QAction::triggered, this, &MainWindow::onFileSaveAs);
+	connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
+	connect(ui.actionExit, &QAction::triggered, this, &MainWindow::onExit);
+	connect(ui.actionAbout, &QAction::triggered, this, &MainWindow::onAbout);
+	connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
+	connect(ui.actionUndo, &QAction::triggered, this, &MainWindow::onUndo);
+	connect(ui.actionRedo, &QAction::triggered, this, &MainWindow::onRedo);
+    connect(ui.actionToHtml, &QAction::triggered, this, &MainWindow::onToHtml);
+
+ //   connect(ui.actionBold, &QAction::triggered, this, &MainWindow::onBold);
+	//connect(ui.actionItalic, &QAction::triggered, this, &MainWindow::onItalic);
+	//connect(ui.actionUnderline, &QAction::triggered, this, &MainWindow::onUnderline);
+	//connect(ui.actionCode, &QAction::triggered, this, &MainWindow::onCode);
+	//connect(ui.actionLink, &QAction::triggered, this, &MainWindow::onLink);
+	//connect(ui.actionImg, &QAction::triggered, this, &MainWindow::onImg);
+	//connect(ui.actionH1, &QAction::triggered, this, &MainWindow::onH1);
+	//connect(ui.actionH2, &QAction::triggered, this, &MainWindow::onH2);
+	//connect(ui.actionH3, &QAction::triggered, this, &MainWindow::onH3);
+	//connect(ui.actionH4, &QAction::triggered, this, &MainWindow::onH4);
+	//connect(ui.actionH5, &QAction::triggered, this, &MainWindow::onH5);
+	//connect(ui.actionH6, &QAction::triggered, this, &MainWindow::onH6);
+
 
     ui.ted->setPlainText(
         "# First level heading\n\n"
@@ -315,23 +338,25 @@ void MainWindow::on_actionvideo_triggered()
        // ui.ted->setTextCursor(cursor);
     }
 }
-void MainWindow::on_actionTohtml_triggered() {
+void MainWindow::onToHtml() {
 
     QString markdownText = ui.ted->toPlainText();
     QString htmlText = QStringConvertor::addHtmlHeader(markdownText);
     ui.ted->setPlainText(htmlText);
 }
 
-void MainWindow::on_actionRedo_triggered()
+void MainWindow::onRedo()
 {
    ui.ted->redo();
 }
 
-void MainWindow::on_actionUndo_triggered()
+void MainWindow::onUndo()
 {
   ui.ted->undo();
 }
+
 //===========================================file functions===========================================
+
 void MainWindow::updateStatusBar()
 {
     statusBar()->showMessage(currentFile);
@@ -373,9 +398,9 @@ void MainWindow::onFileOpen() {
     }
 
 }
-void MainWindow::on_actionFileSave_triggered() {
+void MainWindow::onFileSave() {
     if (currentFile.isEmpty()) {
-        on_actionFileSaveAs_triggered() ;
+        onFileSaveAs() ;
         return;
     }
 
@@ -390,7 +415,7 @@ void MainWindow::on_actionFileSave_triggered() {
     }
 }
 
-void MainWindow::on_actionFileSaveAs_triggered() {
+void MainWindow::onFileSaveAs() {
 
     //QString stt = QFileDialog::getSaveFileName(this, tr("Save As "), "/home",
                                               // tr("Text files (*.html )"));
@@ -407,15 +432,15 @@ void MainWindow::on_actionFileSaveAs_triggered() {
         updateStatusBar();
     }
 }
-void MainWindow::on_actionExit_triggered() {
+void MainWindow::onExit() {
     QApplication::quit();
 }
-void MainWindow::on_actionAbout_triggered() {
+void MainWindow::onAbout() {
     QMessageBox::information(this, "info", "Created in Qt.");
 }
 
 
-void MainWindow::on_actionPrint_triggered() {
+void MainWindow::onPrint() {
 #ifndef QT_NO_PRINTER
     QPrinter printer(QPrinter::HighResolution);
     printer.setFullPage(true);

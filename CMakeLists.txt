@@ -18,8 +18,6 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
 )
 find_package(Qt6 REQUIRED COMPONENTS Core)
 
-qt_standard_project_setup()
-
 add_subdirectory(cmark)
 
 qt_add_executable(wedit
@@ -34,12 +32,9 @@ qt_add_executable(wedit
     src/forms/mainwindow.ui
     resource/wedit.qrc
     resource/wedit.rc
-    README.md
-    .gitignore LICENSE.txt
-
+    README.md LICENSE.txt
+    .gitignore 
 )
-
-
 
 target_link_libraries(wedit
     PRIVATE
