@@ -43,18 +43,18 @@ MainWindow::MainWindow() {
 	connect(ui.actionRedo, &QAction::triggered, this, &MainWindow::onRedo);
     connect(ui.actionToHtml, &QAction::triggered, this, &MainWindow::onToHtml);
 
- //   connect(ui.actionBold, &QAction::triggered, this, &MainWindow::onBold);
-	//connect(ui.actionItalic, &QAction::triggered, this, &MainWindow::onItalic);
-	//connect(ui.actionUnderline, &QAction::triggered, this, &MainWindow::onUnderline);
-	//connect(ui.actionCode, &QAction::triggered, this, &MainWindow::onCode);
-	//connect(ui.actionLink, &QAction::triggered, this, &MainWindow::onLink);
-	//connect(ui.actionImg, &QAction::triggered, this, &MainWindow::onImg);
-	//connect(ui.actionH1, &QAction::triggered, this, &MainWindow::onH1);
-	//connect(ui.actionH2, &QAction::triggered, this, &MainWindow::onH2);
-	//connect(ui.actionH3, &QAction::triggered, this, &MainWindow::onH3);
-	//connect(ui.actionH4, &QAction::triggered, this, &MainWindow::onH4);
-	//connect(ui.actionH5, &QAction::triggered, this, &MainWindow::onH5);
-	//connect(ui.actionH6, &QAction::triggered, this, &MainWindow::onH6);
+    connect(ui.actionBold, &QAction::triggered, this, &MainWindow::onAddBold);
+    connect(ui.actionItalic, &QAction::triggered, this, &MainWindow::onAddItalic);
+    connect(ui.actionCode, &QAction::triggered, this, &MainWindow::onAddCode);
+    connect(ui.actionLink, &QAction::triggered, this, &MainWindow::onAddLink);
+    connect(ui.actionImg, &QAction::triggered, this, &MainWindow::onAddImg);
+    connect(ui.actionUl, &QAction::triggered, this, &MainWindow::onAddUl);
+    connect(ui.actionP, &QAction::triggered, this, &MainWindow::onAddP);
+    connect(ui.actionVideo, &QAction::triggered, this, &MainWindow::onAddVideo);
+    connect(ui.actionH1, &QAction::triggered, this, &MainWindow::onAddH1);
+    connect(ui.actionH2, &QAction::triggered, this, &MainWindow::onAddH2);
+    connect(ui.actionH3, &QAction::triggered, this, &MainWindow::onAddH3);
+
 
 
     ui.ted->setPlainText(
@@ -182,7 +182,7 @@ void MainWindow::insertImageProgrammatically() {
 }
 //===========================================md functions===========================================
 
-void MainWindow::on_actionheadOne_triggered() {
+void MainWindow::onAddH1() {
     QTextCursor cursor = ui.ted->textCursor();
 
     if (cursor.hasSelection()) {
@@ -193,7 +193,7 @@ void MainWindow::on_actionheadOne_triggered() {
     }
 }
 
-void MainWindow::on_actionheadTwo_triggered()
+void MainWindow::onAddH2()
 {
     QTextCursor cursor = ui.ted->textCursor();
 
@@ -205,7 +205,7 @@ void MainWindow::on_actionheadTwo_triggered()
     }
 }
 
-void MainWindow::on_actionheadThree_triggered()
+void MainWindow::onAddH3()
 {
     QTextCursor cursor = ui.ted->textCursor();
 
@@ -217,7 +217,7 @@ void MainWindow::on_actionheadThree_triggered()
     }
 }
 
-void MainWindow::on_actionbold_triggered()
+void MainWindow::onAddBold()
 {
     QTextCursor cursor = ui.ted->textCursor();
 
@@ -231,7 +231,7 @@ void MainWindow::on_actionbold_triggered()
     }
 }
 
-void MainWindow::on_actionitalic_triggered()
+void MainWindow::onAddItalic()
 {
     QTextCursor cursor = ui.ted->textCursor();
 
@@ -245,7 +245,7 @@ void MainWindow::on_actionitalic_triggered()
     }
 }
 
-void MainWindow::on_actionp_triggered()
+void MainWindow::onAddP()
 {
     QTextCursor cursor = ui.ted->textCursor();
 
@@ -259,7 +259,7 @@ void MainWindow::on_actionp_triggered()
     }
 }
 
-void MainWindow::on_actionlink_triggered()
+void MainWindow::onAddLink()
 {
     QTextCursor cursor = ui.ted->textCursor();
 
@@ -273,7 +273,7 @@ void MainWindow::on_actionlink_triggered()
     }
 }
 
-void MainWindow::on_actionul_triggered()
+void MainWindow::onAddUl()
 {
     QTextCursor cursor = ui.ted->textCursor();
 
@@ -287,7 +287,7 @@ void MainWindow::on_actionul_triggered()
     }
 }
 
-void MainWindow::on_actioncode_triggered()
+void MainWindow::onAddCode()
 {
     QTextCursor cursor = ui.ted->textCursor();
 
@@ -300,7 +300,7 @@ void MainWindow::on_actioncode_triggered()
        // ui.ted->setTextCursor(cursor);
     }
 }
-void MainWindow::on_actionimg_triggered() {
+void MainWindow::onAddImg() {
 
 
     QTextCursor cursor = ui.ted->textCursor();
@@ -325,7 +325,7 @@ void MainWindow::on_actionimg_triggered() {
 
 }
 // todo add yotube for blog
-void MainWindow::on_actionvideo_triggered()
+void MainWindow::onAddVideo()
 {
     QTextCursor cursor = ui.ted->textCursor();
 

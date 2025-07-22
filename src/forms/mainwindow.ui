@@ -87,15 +87,15 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionheadOne"/>
-   <addaction name="actionheadTwo"/>
-   <addaction name="actionheadThree"/>
-   <addaction name="actionbold"/>
-   <addaction name="actionitalic"/>
-   <addaction name="actionul"/>
-   <addaction name="actionlink"/>
-   <addaction name="actioncode"/>
-   <addaction name="actionimg"/>
+   <addaction name="actionH1"/>
+   <addaction name="actionH2"/>
+   <addaction name="actionH3"/>
+   <addaction name="actionBold"/>
+   <addaction name="actionItalic"/>
+   <addaction name="actionUl"/>
+   <addaction name="actionLink"/>
+   <addaction name="actionCode"/>
+   <addaction name="actionImg"/>
   </widget>
   <action name="actionFileOpen">
    <property name="text">
@@ -122,7 +122,7 @@
     <string>print</string>
    </property>
   </action>
-  <action name="actionheadOne">
+  <action name="actionH1">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/h1.png</normaloff>:/icons/h1.png</iconset>
@@ -137,7 +137,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionheadTwo">
+  <action name="actionH2">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/h2.png</normaloff>:/icons/h2.png</iconset>
@@ -152,7 +152,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionheadThree">
+  <action name="actionH3">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/h3.png</normaloff>:/icons/h3.png</iconset>
@@ -167,7 +167,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionbold">
+  <action name="actionBold">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/b.png</normaloff>:/icons/b.png</iconset>
@@ -182,7 +182,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionitalic">
+  <action name="actionItalic">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/i.png</normaloff>:/icons/i.png</iconset>
@@ -197,7 +197,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionlink">
+  <action name="actionLink">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/a.png</normaloff>:/icons/a.png</iconset>
@@ -212,7 +212,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionimg">
+  <action name="actionImg">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/img.png</normaloff>:/icons/img.png</iconset>
@@ -227,7 +227,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionul">
+  <action name="actionUl">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/ul.png</normaloff>:/icons/ul.png</iconset>
@@ -242,7 +242,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionvideo">
+  <action name="actionVideo">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/video.png</normaloff>:/icons/video.png</iconset>
@@ -257,7 +257,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actioncode">
+  <action name="actionCode">
    <property name="icon">
     <iconset resource="../../resource/wedit.qrc">
      <normaloff>:/icons/code.png</normaloff>:/icons/code.png</iconset>
@@ -272,7 +272,7 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionp">
+  <action name="actionP">
    <property name="icon">
     <iconset>
      <normaloff>:/icons/p.png</normaloff>:/icons/p.png</iconset>
