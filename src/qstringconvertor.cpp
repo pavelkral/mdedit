@@ -2,102 +2,116 @@
 
 #include <QRegularExpression>
 
-QStringConvertor::QStringConvertor(QObject *parent) : QObject{parent} {}
+QStringConvertor::QStringConvertor(QObject* parent) : QObject{ parent } {}
 
-QString QStringConvertor::mdToHtml(QString &S) {
+QString QStringConvertor::mdToHtml(QString& S) {
 
     QString html = S;
 
-    // --- code block---
-    // ```
-    // code
-    // ```
-    //  (\\s*(\\S*)?): \S* = charter // (.*?) = lazy
+    // --- 1. Code blocks (```language\ncode```) ---
     static const QRegularExpression codeBlockRegExp(
         "```\\s*(\\S*)?\n(.*?)```",
-        QRegularExpression::DotMatchesEverythingOption);
+        QRegularExpression::DotMatchesEverythingOption
+    );
 
-    QRegularExpressionMatchIterator i = codeBlockRegExp.globalMatch(html);
-    while (i.hasNext()) {
-        QRegularExpressionMatch match = i.next();
-        QString fullMatch = match.captured(0); // Celá shoda (```...```)
-        QString language =
-            match.captured(1); // Zachycený jazyk (např. "cpp", "python")
-        QString codeContent = match.captured(2); // Samotný kód
+    QRegularExpressionMatchIterator codeIter = codeBlockRegExp.globalMatch(html);
+    while (codeIter.hasNext()) {
+        QRegularExpressionMatch match = codeIter.next();
+        QString fullMatch = match.captured(0);       // Full match (```...```)
+        QString language = match.captured(1);       // Language hint (e.g. cpp)
+        QString code = match.captured(2);       // Code content
 
-        QString classAttr = "";
+        QString classAttr;
         if (!language.isEmpty()) {
             classAttr = QString(" class=\"language-%1\"").arg(language);
         }
 
         QString replacement = QString("<pre><code%1>%2</code></pre>")
-                                  .arg(classAttr, codeContent.toHtmlEscaped());
-        // escape HTML
+            .arg(classAttr, code.toHtmlEscaped());
+
         html.replace(fullMatch, replacement);
     }
-    // --- code  ---
-    // `code`
-    // Toto musí být až PO parsování víceřádkových bloků!
+
+    // --- 2. Inline code (`code`) ---
+    // This must run *after* the multiline code blocks!
     static const QRegularExpression inlineCodeRegExp("`(.*?)`");
     html.replace(inlineCodeRegExp, "<code>\\1</code>");
-    // --- 1. Nadpisy (H3 -> H1) ---H3 (### Text)
+
+    // --- 3. Headers ---
+    // ### Header → <h3>, ## Header → <h2>, # Header → <h1>
     html.replace(
         QRegularExpression("^###\\s*(.*)$", QRegularExpression::MultilineOption),
-        "<h3>\\1</h3>");
+        "<h3>\\1</h3>"
+    );
     html.replace(
         QRegularExpression("^##\\s*(.*)$", QRegularExpression::MultilineOption),
-        "<h2>\\1</h2>");
+        "<h2>\\1</h2>"
+    );
     html.replace(
         QRegularExpression("^#\\s*(.*)$", QRegularExpression::MultilineOption),
-        "<h1>\\1</h1>");
-    // --- 2. bold ---
-    // **text** / __text__
-    html.replace(QRegularExpression("\\*\\*(.*?)\\*\\*|__(.*?)__"),
-                 "<strong>\\1\\2</strong>");
+        "<h1>\\1</h1>"
+    );
 
-    // --- 3.italic ---// *text* / _text_
-    html.replace(QRegularExpression("(?<!\\*)\\*(?!\\*)(.*?)(?<!\\*)\\*(?!\\*)|(?"
-                                    "<!_)(?!__)_(.*?)(?<!_)_(?!__)"),
-                 "<em>\\1\\2</em>");
-    // 4 link
-    // [text](url)
-    html.replace(QRegularExpression("\\[(.*?)\\]\\((.*?)\\)"),
-                 "<a href=\"\\2\">\\1</a>");
-    // --- 6. S (ul) ---
-    // Najdeme všechny řádky začínající - nebo *
+    // --- 4. Bold text ---
+    // **text** or __text__ → <strong>
+    html.replace(
+        QRegularExpression("\\*\\*(.*?)\\*\\*|__(.*?)__"),
+        "<strong>\\1\\2</strong>"
+    );
+
+    // --- 5. Italic text ---
+    // *text* or _text_ → <em>
+    html.replace(
+        QRegularExpression("(?<!\\*)\\*(?!\\*)(.*?)(?<!\\*)\\*(?!\\*)|(?<!_)(?!__)_(.*?)(?<!_)_(?!__)"),
+        "<em>\\1\\2</em>"
+    );
+
+    // --- 6. Hyperlinks ---
+    // [text](url) → <a href="url">text</a>
+    html.replace(
+        QRegularExpression("\\[(.*?)\\]\\((.*?)\\)"),
+        "<a href=\"\\2\">\\1</a>"
+    );
+
+    // --- 7. Unordered list ---
+    // Lines starting with - or * → <ul><li>...</li></ul>
     QStringList listItems;
     static const QRegularExpression listItemRegExp(
-        "^\\s*[-*]\\s*(.*)$", QRegularExpression::MultilineOption);
-    QRegularExpressionMatchIterator it = listItemRegExp.globalMatch(html);
-    while (it.hasNext()) {
-        QRegularExpressionMatch match = it.next();
+        "^\\s*[-*]\\s*(.*)$",
+        QRegularExpression::MultilineOption
+    );
+
+    QRegularExpressionMatchIterator listIter = listItemRegExp.globalMatch(html);
+    while (listIter.hasNext()) {
+        QRegularExpressionMatch match = listIter.next();
         listItems << "<li>" + match.captured(1).trimmed() + "</li>";
     }
-    // 6
-    //  <ul>
+
     if (!listItems.isEmpty()) {
         QString ul = "<ul>\n" + listItems.join("\n") + "\n</ul>";
-        html.replace(listItemRegExp, ""); // Odstraní původní řádky
+        html.replace(listItemRegExp, ""); // Remove original list lines
         html.prepend(ul + "\n");
     }
 
-    // --- 7.
-    //<br> ---
+    // --- 8. Line breaks ---
+    // Convert remaining newlines to <br>
     html.replace("\n", "<br>");
+
     return html;
+
 }
 
-QString QStringConvertor::addHtmlHeader(QString &str) {
-    // QMessageBox::information(this, "info"," tags ");
-    qDebug() << "ok";
-    QString st = str;
-    // st.replace(QString("\n"), QString("\n<br />"));
-    st.prepend(
-        "<!DOCTYPE HTML PUBLIC-//W3C//DTD HTML 4.01 "
-        "Transitional//EN>\n<html>\n<head><title>title</title>\n<link "
-        "href=styl2.css rel=stylesheet type=text/css />\n<META "
-        "http-equiv=content-type content=text/html; charset=windows-1250>\n<META "
-        "http-equiv=Content-language content=cs>\n</head>\n<body>\n");
-    st.append("\n</body>\n</html>");
-    return st;
+QString QStringConvertor::addHtmlHeader(QString& str) {
+	// QMessageBox::information(this, "info"," tags ");
+	qDebug() << "ok";
+	QString st = str;
+	// st.replace(QString("\n"), QString("\n<br />"));
+	st.prepend(
+		"<!DOCTYPE HTML PUBLIC-//W3C//DTD HTML 4.01 "
+		"Transitional//EN>\n<html>\n<head><title>title</title>\n<link "
+		"href=styl2.css rel=stylesheet type=text/css />\n<META "
+		"http-equiv=content-type content=text/html; charset=windows-1250>\n<META "
+		"http-equiv=Content-language content=cs>\n</head>\n<body>\n");
+	st.append("\n</body>\n</html>");
+	return st;
 }

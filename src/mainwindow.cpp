@@ -24,13 +24,13 @@ MainWindow::MainWindow() {
     ui.setupUi(this);
     setWindowTitle(tr("Wedit"));
     setWindowIcon(QIcon("img/wedit.png"));
-    connect(ui.ted, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
+    connect(ui.textEditMain, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
     QString filename = "";
     updatePreview();
     networkManager = new QNetworkAccessManager(this);
     resize(1280,720);
     highlighter = new HtmlHighlighter(ui.textEditHtml->document());
-    mdhighlighter = new MarkdownHighlighter(ui.ted->document());
+    mdhighlighter = new MarkdownHighlighter(ui.textEditMain->document());
 
     connect(ui.actionFileOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
     connect(ui.actionFileSave, &QAction::triggered, this, &MainWindow::onFileSave);
@@ -57,7 +57,7 @@ MainWindow::MainWindow() {
 
 
 
-    ui.ted->setPlainText(
+    ui.textEditMain->setPlainText(
         "# First level heading\n\n"
         "This is *italics* and this is **bold** text.\n\n"
         "## Subheading\n\n"
@@ -78,7 +78,7 @@ MainWindow::~MainWindow() {
 
 }
 void MainWindow::updatePreview() {
-    QString markdownText = ui.ted->toPlainText();
+    QString markdownText = ui.textEditMain->toPlainText();
     QString htmlText = convertMarkdownToHtml(markdownText);
     ui.textEditPreview->setHtml(htmlText);
     ui.textEditHtml->setPlainText(htmlText);
@@ -168,11 +168,11 @@ void MainWindow::insertImageProgrammatically() {
         return;
     }
 
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
     cursor.movePosition(QTextCursor::End);
 
     QUrl imageUrl = QUrl::fromLocalFile(imagePath);
-    ui.ted->document()->addResource(QTextDocument::ImageResource, imageUrl,QVariant(imageUrl));
+    ui.textEditMain->document()->addResource(QTextDocument::ImageResource, imageUrl,QVariant(imageUrl));
 
     QTextImageFormat imageFormat;
     imageFormat.setName(imageUrl.toString());
@@ -183,7 +183,7 @@ void MainWindow::insertImageProgrammatically() {
 //===========================================md functions===========================================
 
 void MainWindow::onAddH1() {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -195,7 +195,7 @@ void MainWindow::onAddH1() {
 
 void MainWindow::onAddH2()
 {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -207,7 +207,7 @@ void MainWindow::onAddH2()
 
 void MainWindow::onAddH3()
 {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -219,7 +219,7 @@ void MainWindow::onAddH3()
 
 void MainWindow::onAddBold()
 {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -233,7 +233,7 @@ void MainWindow::onAddBold()
 
 void MainWindow::onAddItalic()
 {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -247,7 +247,7 @@ void MainWindow::onAddItalic()
 
 void MainWindow::onAddP()
 {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -261,7 +261,7 @@ void MainWindow::onAddP()
 
 void MainWindow::onAddLink()
 {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -275,7 +275,7 @@ void MainWindow::onAddLink()
 
 void MainWindow::onAddUl()
 {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -289,7 +289,7 @@ void MainWindow::onAddUl()
 
 void MainWindow::onAddCode()
 {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -303,7 +303,7 @@ void MainWindow::onAddCode()
 void MainWindow::onAddImg() {
 
 
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
    // cursor.insertText(R"(<img src='' alt=''>)");
     //cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
     QString url = "https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";
@@ -327,7 +327,7 @@ void MainWindow::onAddImg() {
 // todo add yotube for blog
 void MainWindow::onAddVideo()
 {
-    QTextCursor cursor = ui.ted->textCursor();
+    QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -340,22 +340,22 @@ void MainWindow::onAddVideo()
 }
 void MainWindow::onToHtml() {
 
-    QString markdownText = ui.ted->toPlainText();
+    QString markdownText = ui.textEditMain->toPlainText();
     QString htmlText = QStringConvertor::addHtmlHeader(markdownText);
-    ui.ted->setPlainText(htmlText);
+    ui.textEditMain->setPlainText(htmlText);
 }
 
 void MainWindow::onRedo()
 {
-   ui.ted->redo();
+   ui.textEditMain->redo();
 }
 
 void MainWindow::onUndo()
 {
-  ui.ted->undo();
+  ui.textEditMain->undo();
 }
 
-//===========================================file functions===========================================
+//===========================================file and header functions===========================================
 
 void MainWindow::updateStatusBar()
 {
@@ -388,7 +388,7 @@ void MainWindow::onFileOpen() {
         if (file.open(QFile::ReadOnly | QFile::Text)) {
             QTextStream in(&file);
             QString text = in.readAll();
-            ui.ted->setPlainText(text);
+            ui.textEditMain->setPlainText(text);
             file.close();
             currentFile = fileName;
             updateStatusBar();
@@ -407,7 +407,7 @@ void MainWindow::onFileSave() {
     QFile file(currentFile);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(&file);
-        out << ui.ted->toPlainText();
+        out << ui.textEditMain->toPlainText();
         file.close();
         updateStatusBar();
     } else {
@@ -427,7 +427,7 @@ void MainWindow::onFileSaveAs() {
     if (file.open(QFile::WriteOnly)) {
         QTextStream stream(&file);
         stream.setEncoding(QStringConverter::Utf8);
-        stream << ui.ted->toPlainText();
+        stream << ui.textEditMain->toPlainText();
         file.close();
         updateStatusBar();
     }
@@ -445,11 +445,11 @@ void MainWindow::onPrint() {
     QPrinter printer(QPrinter::HighResolution);
     printer.setFullPage(true);
     QPrintDialog *dlg = new QPrintDialog(&printer, this);
-    if (ui.ted->textCursor().hasSelection())
+    if (ui.textEditMain->textCursor().hasSelection())
         dlg->setOption(QAbstractPrintDialog::PrintSelection, true);
     dlg->setWindowTitle(tr("Print Document"));
     if (dlg->exec() == QDialog::Accepted) {
-        ui.ted->print(&printer);
+        ui.textEditMain->print(&printer);
     }
     delete dlg;
 #endif

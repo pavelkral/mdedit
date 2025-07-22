@@ -20,7 +20,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QTextEdit" name="ted"/>
+     <widget class="QTextEdit" name="textEditMain"/>
     </item>
     <item row="0" column="1" rowspan="2">
      <widget class="QTextEdit" name="textEditPreview"/>
