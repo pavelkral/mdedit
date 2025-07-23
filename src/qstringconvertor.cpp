@@ -105,13 +105,71 @@ QString QStringConvertor::addHtmlHeader(QString& str) {
 	// QMessageBox::information(this, "info"," tags ");
 	qDebug() << "ok";
 	QString st = str;
-	// st.replace(QString("\n"), QString("\n<br />"));
-	st.prepend(
-		"<!DOCTYPE HTML PUBLIC-//W3C//DTD HTML 4.01 "
-		"Transitional//EN>\n<html>\n<head><title>title</title>\n<link "
-		"href=styl2.css rel=stylesheet type=text/css />\n<META "
-		"http-equiv=content-type content=text/html; charset=windows-1250>\n<META "
-		"http-equiv=Content-language content=cs>\n</head>\n<body>\n");
+    // st.replace(QString("\n"), QString("\n<br />"));
+    // st.prepend(
+    //     "<html>\n"
+    //     "<head>\n"
+    //     "<title>title</title>\n"
+    //     "<style>\n"
+    //     "  body { background-color: #fdf6e3; color: #002b36; font-family: 'Courier New'; font-size: 14px; }\n"
+    //     "  h1 { color: #b58900; font-size: 20px; margin-bottom: 10px; }\n"
+    //     "  p { margin: 0 0 10px 0; }\n"
+    //     "  code { background-color: #eee8d5; padding: 2px 4px; border-radius: 4px; font-family: monospace; }\n"
+    //     "</style>\n"
+    //     "</head>\n"
+    //     "<body>\n\n"
+    //     );
+
+    st.prepend(
+        "<html>\n"
+        "<head>\n"
+        "<title>GitHub Markdown Style</title>\n"
+        "<style>\n"
+        "  body {\n"
+        "    background: white;\n"
+        "    color: #24292e;\n"
+        "    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\";\n"
+        "    font-size: 16px;\n"
+        "    line-height: 1.5;\n"
+        "    padding: 20px;\n"
+        "  }\n"
+        "  h1, h2, h3, h4, h5, h6 {\n"
+        "    font-weight: 600;\n"
+        "    margin-top: 24px;\n"
+        "    margin-bottom: 16px;\n"
+        "    border-bottom: 1px solid #eaecef;\n"
+        "    padding-bottom: .3em;\n"
+        "  }\n"
+        "  p {\n"
+        "    margin-top: 0;\n"
+        "    margin-bottom: 16px;\n"
+        "  }\n"
+        "  code {\n"
+        "    background-color: rgba(27,31,35,0.05);\n"
+        "    padding: .2em .4em;\n"
+        "    margin: 0;\n"
+        "    font-size: 85%;\n"
+        "    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;\n"
+        "    border-radius: 6px;\n"
+        "  }\n"
+        "  pre {\n"
+        "    background-color: #f6f8fa;\n"
+        "    padding: 16px;\n"
+        "    overflow: auto;\n"
+        "    font-size: 85%;\n"
+        "    line-height: 1.45;\n"
+        "    border-radius: 6px;\n"
+        "  }\n"
+        "  blockquote {\n"
+        "    padding: 0 1em;\n"
+        "    color: #6a737d;\n"
+        "    border-left: .25em solid #dfe2e5;\n"
+        "  }\n"
+        "</style>\n"
+        "</head>\n"
+        "<body>\n\n"
+        );
 	st.append("\n</body>\n</html>");
+
 	return st;
 }

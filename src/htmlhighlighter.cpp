@@ -8,7 +8,7 @@ HtmlHighlighter::HtmlHighlighter(QTextDocument *parent)
 
     // 1. tags ( <h1>, </p>)
     QTextCharFormat tagFormat;
-    tagFormat.setForeground(QColor(255, 140, 0));
+    tagFormat.setForeground(QColor(85, 200, 200));
     tagFormat.setFontWeight(QFont::Bold);
     rule.pattern = QRegularExpression(R"(</?\w+.*?>)"); //  tags
     rule.format = tagFormat;
@@ -16,7 +16,7 @@ HtmlHighlighter::HtmlHighlighter(QTextDocument *parent)
 
     // 2. atributes ( href=, class=)
     QTextCharFormat attributeFormat;
-    attributeFormat.setForeground(QColor(0, 128, 128));
+    attributeFormat.setForeground(Qt::darkRed);
     attributeFormat.setFontItalic(true);
     rule.pattern = QRegularExpression(R"(\b([a-zA-Z0-9_-]+)\s*=)");
     rule.format = attributeFormat;
