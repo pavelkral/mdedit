@@ -6,8 +6,9 @@ QStringConvertor::QStringConvertor(QObject* parent) : QObject{ parent } {}
 
 QString QStringConvertor::mdToHtml(QString& S) {
 
-    QString html = S;
 
+
+    QString html = S;
     // --- 1. Code blocks (```language\ncode```) ---
     static const QRegularExpression codeBlockRegExp(
         "```\\s*(\\S*)?\n(.*?)```",
@@ -96,15 +97,16 @@ QString QStringConvertor::mdToHtml(QString& S) {
     // --- 8. Line breaks ---
     // Convert remaining newlines to <br>
     html.replace("\n", "<br>");
-
     return html;
 
 }
 
 QString QStringConvertor::addHtmlHeader(QString& str) {
+
 	// QMessageBox::information(this, "info"," tags ");
-	qDebug() << "ok";
-	QString st = str;
+    qDebug() << "adding headers";
+
+    QString html_str = str;
     // st.replace(QString("\n"), QString("\n<br />"));
     // st.prepend(
     //     "<html>\n"
@@ -120,7 +122,7 @@ QString QStringConvertor::addHtmlHeader(QString& str) {
     //     "<body>\n\n"
     //     );
 
-    st.prepend(
+    html_str.prepend(
         "<html>\n"
         "<head>\n"
         "<title>GitHub Markdown Style</title>\n"
@@ -169,7 +171,7 @@ QString QStringConvertor::addHtmlHeader(QString& str) {
         "</head>\n"
         "<body>\n\n"
         );
-	st.append("\n</body>\n</html>");
+    html_str.append("\n</body>\n</html>");
 
-	return st;
+    return html_str;
 }
