@@ -13,7 +13,7 @@
 #include <QRegularExpression>
 #include "htmlhighlighter.h"
 #include "markdownhighlighter.h"
-#include "qstringconvertor.h"
+#include "utils.h"
 
 extern "C" {
 #include "cmark.h"
@@ -28,7 +28,7 @@ MainWindow::MainWindow() {
     QString filename = "";
     updatePreview();
     networkManager = new QNetworkAccessManager(this);
-    resize(1280,720);
+    resize(1280,800);
     highlighter = new HtmlHighlighter(ui.textEditHtml->document());
     mdhighlighter = new MarkdownHighlighter(ui.textEditMain->document());
 
@@ -41,7 +41,7 @@ MainWindow::MainWindow() {
 	connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
 	connect(ui.actionUndo, &QAction::triggered, this, &MainWindow::onUndo);
 	connect(ui.actionRedo, &QAction::triggered, this, &MainWindow::onRedo);
-    connect(ui.actionToHtml, &QAction::triggered, this, &MainWindow::onToHtml);
+    connect(ui.actionAddStyle, &QAction::triggered, this, &MainWindow::onToHtml);
 
     connect(ui.actionBold, &QAction::triggered, this, &MainWindow::onAddBold);
     connect(ui.actionItalic, &QAction::triggered, this, &MainWindow::onAddItalic);
@@ -341,7 +341,7 @@ void MainWindow::onAddVideo()
 void MainWindow::onToHtml() {
 
     QString markdownText = ui.textEditMain->toPlainText();
-    QString htmlText = QStringConvertor::addHtmlHeader(markdownText);
+    QString htmlText = Utils::addHtmlStyle(markdownText);
     ui.textEditMain->setPlainText(htmlText);
 }
 

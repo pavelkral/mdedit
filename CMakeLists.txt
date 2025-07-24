@@ -25,8 +25,8 @@ qt_add_executable(wedit
     src/mainwindow.cpp
     src/mainwindow.h
     src/main.cpp
-    src/qstringconvertor.h
-    src/qstringconvertor.cpp
+    src/utils.h
+    src/utils.cpp
     src/htmlhighlighter.h src/htmlhighlighter.cpp
     src/markdownhighlighter.h src/markdownhighlighter.cpp
     src/forms/mainwindow.ui

@@ -103,12 +103,15 @@
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="actionAddStyle"/>
    </widget>
    <widget class="QMenu" name="menuExport">
     <property name="title">
      <string>Export</string>
     </property>
-    <addaction name="actionToHtml"/>
+    <addaction name="actionExportHtml"/>
+    <addaction name="actionExportPdf"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -158,7 +161,10 @@
   </action>
   <action name="actionPrint">
    <property name="text">
-    <string>print</string>
+    <string>Print</string>
+   </property>
+   <property name="toolTip">
+    <string>Print</string>
    </property>
   </action>
   <action name="actionH1">
@@ -353,9 +359,34 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionToHtml">
+  <action name="actionAddStyle">
    <property name="text">
-    <string>To Html</string>
+    <string>Add Style</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Style</string>
+   </property>
+  </action>
+  <action name="actionExportHtml">
+   <property name="text">
+    <string>Export Html</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Html</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionExportPdf">
+   <property name="text">
+    <string>Export Pdf</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Html</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
  </widget>

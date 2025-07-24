@@ -1,14 +1,13 @@
-#include "qstringconvertor.h"
+#include "utils.h"
 
 #include <QRegularExpression>
 
-QStringConvertor::QStringConvertor(QObject* parent) : QObject{ parent } {}
+Utils::Utils(QObject* parent) : QObject{ parent } {}
 
-QString QStringConvertor::mdToHtml(QString& S) {
-
-
+QString Utils::mdToHtml(QString& S) {
 
     QString html = S;
+
     // --- 1. Code blocks (```language\ncode```) ---
     static const QRegularExpression codeBlockRegExp(
         "```\\s*(\\S*)?\n(.*?)```",
@@ -101,7 +100,7 @@ QString QStringConvertor::mdToHtml(QString& S) {
 
 }
 
-QString QStringConvertor::addHtmlHeader(QString& str) {
+QString Utils::addHtmlStyle(QString& str) {
 
 	// QMessageBox::information(this, "info"," tags ");
     qDebug() << "adding headers";
@@ -126,6 +125,7 @@ QString QStringConvertor::addHtmlHeader(QString& str) {
         "<html>\n"
         "<head>\n"
         "<title>GitHub Markdown Style</title>\n"
+        "<meta charset=\"utf-8\">\n"
         "<style>\n"
         "  body {\n"
         "    background: white;\n"
@@ -171,7 +171,7 @@ QString QStringConvertor::addHtmlHeader(QString& str) {
         "</head>\n"
         "<body>\n\n"
         );
-    html_str.append("\n</body>\n</html>");
 
+    html_str.append("\n</body>\n</html>");
     return html_str;
 }
