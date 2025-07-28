@@ -1,5 +1,13 @@
-# MD and HTML GUI TOOL
-
+<table>
+  <tr>
+    <td>
+      <img src="https://raw.githubusercontent.com/pavelkral/mdedit/refs/heads/main/resource/icons/mdedit.png" width="48" height="48">
+    </td>
+    <td>
+      <h2>MD and HTML GUI TOOL </h2>
+    </td>
+  </tr>
+</table>
 > [!WARNING]
 > This application is still in development.
 It is not feature complete and it is not tested on all platforms. 
