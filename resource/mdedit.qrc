@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/wedit.png</file>
+        <file>icons/mdedit.png</file>
         <file>icons/a.png</file>
         <file>icons/b.png</file>
         <file>icons/code.png</file>

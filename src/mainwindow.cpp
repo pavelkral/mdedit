@@ -23,7 +23,7 @@ MainWindow::MainWindow() {
 
     ui.setupUi(this);
     setWindowTitle(tr("Wedit"));
-    setWindowIcon(QIcon("img/wedit.png"));
+    setWindowIcon(QIcon("img/mdedit.png"));
     connect(ui.textEditMain, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
     QString filename = "";
     updatePreview();

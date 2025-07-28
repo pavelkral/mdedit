@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(wedit LANGUAGES CXX)
+project(mdedit LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -20,7 +20,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core)
 
 add_subdirectory(cmark)
 
-qt_add_executable(wedit
+qt_add_executable(mdedit
     #WIN32 MACOSX_BUNDLE
     src/mainwindow.cpp
     src/mainwindow.h
@@ -30,13 +30,13 @@ qt_add_executable(wedit
     src/htmlhighlighter.h src/htmlhighlighter.cpp
     src/markdownhighlighter.h src/markdownhighlighter.cpp
     src/forms/mainwindow.ui
-    resource/wedit.qrc
-    resource/wedit.rc
+    resource/mdedit.qrc
+    resource/mdedit.rc
     README.md LICENSE.txt
     .gitignore 
 )
 
-target_link_libraries(wedit
+target_link_libraries(mdedit
     PRIVATE
     Qt6::Core
     Qt6::Gui
@@ -47,18 +47,18 @@ target_link_libraries(wedit
     cmark
 
 )
-target_link_libraries(wedit PRIVATE Qt6::Core)
+target_link_libraries(mdedit PRIVATE Qt6::Core)
 
 include(GNUInstallDirs)
 
-install(TARGETS wedit
+install(TARGETS mdedit
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 qt_generate_deploy_app_script(
-    TARGET wedit
+    TARGET mdedit
     OUTPUT_SCRIPT deploy_script
     NO_UNSUPPORTED_PLATFORM_ERROR
 )

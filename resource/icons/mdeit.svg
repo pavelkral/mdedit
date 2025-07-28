@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="256"
+   height="256"
+   viewBox="0 0 128 128"
+   version="1.1"
+   id="svg1"
+   inkscape:export-filename="bitmapa.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="mdeit.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="true"
+     inkscape:export-bgcolor="#ffffff00"
+     inkscape:zoom="3.2109375"
+     inkscape:cx="128"
+     inkscape:cy="126.13139"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       id="grid1"
+       units="mm"
+       originx="0"
+       originy="0"
+       spacingx="0.26458306"
+       spacingy="0.26458306"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       enabled="true"
+       visible="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1">
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect1"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="C,0,0,1,0,14.552068,0,1 @ C,0,0,1,0,0.5,0,1 @ C,0,0,1,0,15.874978,0,1 @ C,0,0,1,0,0.5,0,1"
+       radius="0"
+       unit="px"
+       method="auto"
+       mode="C"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+  </defs>
+  <g
+     inkscape:label="Vrstva 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect1"
+       style="stroke-width:0.500787;fill:#1a1a1a"
+       d="M 15.874983,1.3229153 H 126.49986 l 0.5,0.5 0,109.3019647 -15.87498,15.87498 H 1.8229153 l -0.5,-0.5 V 15.874983 Z"
+       inkscape:path-effect="#path-effect1"
+       inkscape:original-d="M 1.3229153,1.3229153 H 126.99986 V 126.99986 H 1.3229153 Z" />
+    <text
+       xml:space="preserve"
+       style="font-size:62.9232px;line-height:1.25;font-family:sans-serif;stroke:#000000;stroke-width:0.655449;stroke-opacity:1"
+       x="17.50601"
+       y="70.64325"
+       id="text1"
+       transform="scale(1.1088787,0.90181188)"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:62.9232px;font-family:Impact;-inkscape-font-specification:Impact;fill:#ffffff;stroke:#000000;stroke-width:0.655449;stroke-opacity:1"
+         x="17.50601"
+         y="70.64325">MD<tspan
+   style="fill:#666666;stroke-width:0.655449"
+   id="tspan2" /></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:107.726px;line-height:1.25;font-family:sans-serif;stroke-width:2.69316"
+       x="8.8316355"
+       y="188.05858"
+       id="text3"
+       transform="scale(1.7042274,0.58677615)"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Impact;-inkscape-font-specification:Impact;fill:#808080;stroke-width:2.69316"
+         x="8.8316355"
+         y="188.05858">e</tspan></text>
+  </g>
+</svg>
