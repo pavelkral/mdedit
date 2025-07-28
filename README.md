@@ -21,11 +21,6 @@ $ cd build
 $ cmake --build . -- -j8
 ```
 
-### Build Steps qmake
-```
-$ qmake
-$ make
-```
 
 
 ## References
