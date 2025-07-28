@@ -16,7 +16,6 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     NetworkAuth  
     PrintSupport
 )
-find_package(Qt6 REQUIRED COMPONENTS Core)
 
 add_subdirectory(cmark)
 
