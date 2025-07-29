@@ -53,6 +53,7 @@ private slots:
     void onFileOpen();
     void onFileSaveAs();
     void onFileSave();
+    void onHtmlExport();
     void onExit();
     void onAbout();
     void onPrint();

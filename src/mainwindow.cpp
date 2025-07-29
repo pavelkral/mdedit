@@ -36,6 +36,7 @@ MainWindow::MainWindow() {
     connect(ui.actionFileSave, &QAction::triggered, this, &MainWindow::onFileSave);
     connect(ui.actionFileSaveAs, &QAction::triggered, this, &MainWindow::onFileSaveAs);
 	connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
+    connect(ui.actionExportHtml,&QAction::triggered, this, &MainWindow::onHtmlExport);
 	connect(ui.actionExit, &QAction::triggered, this, &MainWindow::onExit);
 	connect(ui.actionAbout, &QAction::triggered, this, &MainWindow::onAbout);
 	connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
@@ -78,15 +79,17 @@ MainWindow::~MainWindow() {
 
 }
 void MainWindow::updatePreview() {
+
     QString markdownText = ui.textEditMain->toPlainText();
     QString htmlText = convertMarkdownToHtml(markdownText);
     ui.textEditPreview->setHtml(htmlText);
     ui.textEditHtml->setPlainText(htmlText);
-    ui.textEditPreview->setStyleSheet("h1 { color: red; } ul { color: black; } em { font-style: italic; }");
+    //ui.textEditPreview->setStyleSheet("h1 { color: red; } ul { color: black; } em { font-style: italic; }");
     findAndDownloadImages(htmlText);
 
 }
 QString MainWindow::convertMarkdownToHtml(const QString &markdown) {
+
     QByteArray markdownBytes = markdown.toUtf8();
 
     int options = CMARK_OPT_DEFAULT | CMARK_OPT_UNSAFE | CMARK_OPT_SMART;
@@ -191,6 +194,11 @@ void MainWindow::onAddH1() {
         QString newText = QString("# %1").arg(selectedText);
         cursor.insertText(newText);
     }
+    else {
+        QString md = QString("# ");
+        cursor.insertText(md);
+
+    }
 }
 
 void MainWindow::onAddH2()
@@ -202,6 +210,12 @@ void MainWindow::onAddH2()
         QString selectedText = cursor.selectedText();
         QString newText = QString("## %1").arg(selectedText);
         cursor.insertText(newText);
+
+    }
+    else {
+        QString md = QString("## ");
+        cursor.insertText(md);
+
     }
 }
 
@@ -214,6 +228,11 @@ void MainWindow::onAddH3()
         QString selectedText = cursor.selectedText();
         QString newText = QString("### %1").arg(selectedText);
         cursor.insertText(newText);
+    }
+    else {
+        QString md = QString("### ");
+        cursor.insertText(md);
+
     }
 }
 
@@ -229,6 +248,15 @@ void MainWindow::onAddBold()
         //cursor.movePosition(QTextCursor::End);
         //ui.ted->setTextCursor(cursor);
     }
+    else{
+        int originalPos = cursor.position();
+        cursor.setPosition(originalPos);
+        cursor.insertText("**");
+        cursor.setPosition(originalPos + QString("**").length());
+        cursor.insertText("**");
+        cursor.setPosition(originalPos + QString("**").length());
+        ui.textEditMain->setTextCursor(cursor);
+    }
 }
 
 void MainWindow::onAddItalic()
@@ -240,23 +268,25 @@ void MainWindow::onAddItalic()
         QString selectedText = cursor.selectedText();
         QString newText = QString("*%1*").arg(selectedText);
         cursor.insertText(newText);
-        //cursor.movePosition(QTextCursor::End);
-       // ui.ted->setTextCursor(cursor);
     }
+    else{
+        int originalPos = cursor.position();
+        cursor.setPosition(originalPos);
+        cursor.insertText("*");
+        cursor.setPosition(originalPos + QString("*").length());
+        cursor.insertText("*");
+        cursor.setPosition(originalPos + QString("*").length());
+        ui.textEditMain->setTextCursor(cursor);
+    }
+
 }
 
 void MainWindow::onAddP()
 {
     QTextCursor cursor = ui.textEditMain->textCursor();
-
-    if (cursor.hasSelection()) {
-
-        QString selectedText = cursor.selectedText();
-        QString newText = QString("%1\n").arg(selectedText);
-        cursor.insertText(newText);
-        //cursor.movePosition(QTextCursor::End);
-        //ui.ted->setTextCursor(cursor);
-    }
+    QString selectedText = cursor.selectedText();
+    QString newText = QString("\n%1\n").arg(selectedText);
+    cursor.insertText(newText);
 }
 
 void MainWindow::onAddLink()
@@ -268,9 +298,17 @@ void MainWindow::onAddLink()
         QString selectedText = cursor.selectedText();
         QString newText = QString("[%1](%1)").arg(selectedText);
         cursor.insertText(newText);
-        //cursor.movePosition(QTextCursor::End);
-        //ui.ted->setTextCursor(cursor);
     }
+    else {
+        int originalPos = cursor.position();
+        cursor.setPosition(originalPos);
+        cursor.insertText("\n[link]");
+        cursor.setPosition(originalPos + QString("\n[link]").length());
+        cursor.insertText("(url)\n");
+        cursor.setPosition(originalPos + QString("\n[link]").length());
+        ui.textEditMain->setTextCursor(cursor);
+    }
+
 }
 
 void MainWindow::onAddUl()
@@ -282,8 +320,10 @@ void MainWindow::onAddUl()
         QString selectedText = cursor.selectedText();
         QString newText = QString("- %1").arg(selectedText);
         cursor.insertText(newText);
-       // cursor.movePosition(QTextCursor::End);
-       // ui.ted->setTextCursor(cursor);
+    }
+    else {
+        QString md = QString("- ");
+        cursor.insertText(md);
     }
 }
 
@@ -296,46 +336,47 @@ void MainWindow::onAddCode()
         QString selectedText = cursor.selectedText();
         QString newText = QString("```%1```  \n").arg(selectedText);
         cursor.insertText(newText);
-        //cursor.movePosition(QTextCursor::End);
-       // ui.ted->setTextCursor(cursor);
     }
+    else {
+        QTextCursor cursor = ui.textEditMain->textCursor();
+        QString beforeCursor = "```cpp\n";
+        QString cursorLine = "code\n";
+        QString afterCursor = "```";
+        cursor.insertText(beforeCursor + cursorLine + afterCursor);
+        int cursorLineStart = cursor.position() - afterCursor.length() - cursorLine.length();
+        cursor.setPosition(cursorLineStart);
+        ui.textEditMain->setTextCursor(cursor);
+    }
+
 }
 void MainWindow::onAddImg() {
 
-
     QTextCursor cursor = ui.textEditMain->textCursor();
-   // cursor.insertText(R"(<img src='' alt=''>)");
-    //cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
-    QString url = "https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";
+    // cursor.insertText(R"(<img src='' alt=''>)");
+    // cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
+    QString url =
+        "https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";
     bool succes;
-    url = QInputDialog::getText ( this, tr ( "New group" ),
-                                       tr ( "Enter the group name:" ), QLineEdit::Normal,
-                                       url, &succes );
+    url =
+        QInputDialog::getText(this, tr("New group"), tr("Enter the group name:"),
+                                QLineEdit::Normal, url, &succes);
 
-    if ( succes && !url.isEmpty() ){
+    if (succes && !url.isEmpty()) {
         QString selectedText = cursor.selectedText();
-        QString newText = QString(R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='%1' /></p>)").arg(url);
+        QString newText =QString(
+                              R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='%1' /></p>)").arg(url);
         cursor.insertText(newText);
+    } else {
+        cursor.insertText(R"(![Image](https://placehold.co/400x200/28A745/FFFFFF?text=Web+Image))");
     }
-    else
-    {
-        // QMessageBox::information(this, "info"," You must entrer url");
-    }
-
-
 }
 // todo add yotube for blog
 void MainWindow::onAddVideo()
 {
     QTextCursor cursor = ui.textEditMain->textCursor();
 
-    if (cursor.hasSelection()) {
+    if (cursor.hasSelection()) {   
 
-        QString selectedText = cursor.selectedText();
-        QString newText = QString("**%1**  \n").arg(selectedText);
-        cursor.insertText(newText);
-       // cursor.movePosition(QTextCursor::End);
-       // ui.ted->setTextCursor(cursor);
     }
 }
 void MainWindow::onToHtml() {
@@ -412,6 +453,21 @@ void MainWindow::onFileSave() {
         updateStatusBar();
     } else {
         QMessageBox::warning(this, "Error", "Could not save file.");
+    }
+}
+
+void MainWindow::onHtmlExport()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save File As", "",
+                                                    "Text Files (*.html);;All Files (*)");
+    currentFile = fileName;
+    QFile file(fileName);
+    if (file.open(QFile::WriteOnly)) {
+        QTextStream stream(&file);
+        stream.setEncoding(QStringConverter::Utf8);
+        stream << ui.textEditHtml->toPlainText();
+        file.close();
+        updateStatusBar();
     }
 }
 
