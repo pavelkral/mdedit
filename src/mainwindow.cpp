@@ -37,6 +37,7 @@ MainWindow::MainWindow() {
     connect(ui.actionFileSaveAs, &QAction::triggered, this, &MainWindow::onFileSaveAs);
 	connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
     connect(ui.actionExportHtml,&QAction::triggered, this, &MainWindow::onHtmlExport);
+    connect(ui.actionExportPdf,&QAction::triggered, this, &MainWindow::onPdfExport);
 	connect(ui.actionExit, &QAction::triggered, this, &MainWindow::onExit);
 	connect(ui.actionAbout, &QAction::triggered, this, &MainWindow::onAbout);
 	connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
@@ -139,7 +140,6 @@ void MainWindow::findAndDownloadImages(const QString &html)
         }
     }
 }
-//TODU FIX
 
 void MainWindow::onImageDownloaded() {
 
@@ -183,9 +183,11 @@ void MainWindow::insertImageProgrammatically() {
 
     cursor.insertImage(imageFormat);
 }
+
 //===========================================md functions===========================================
 
 void MainWindow::onAddH1() {
+
     QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
@@ -311,8 +313,7 @@ void MainWindow::onAddLink()
 
 }
 
-void MainWindow::onAddUl()
-{
+void MainWindow::onAddUl(){
     QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
@@ -320,15 +321,13 @@ void MainWindow::onAddUl()
         QString selectedText = cursor.selectedText();
         QString newText = QString("- %1").arg(selectedText);
         cursor.insertText(newText);
-    }
-    else {
+    } else {
         QString md = QString("- ");
         cursor.insertText(md);
     }
 }
 
-void MainWindow::onAddCode()
-{
+void MainWindow::onAddCode(){
     QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {
@@ -336,26 +335,24 @@ void MainWindow::onAddCode()
         QString selectedText = cursor.selectedText();
         QString newText = QString("```%1```  \n").arg(selectedText);
         cursor.insertText(newText);
-    }
-    else {
+    } else {
         QTextCursor cursor = ui.textEditMain->textCursor();
         QString beforeCursor = "```cpp\n";
         QString cursorLine = "code\n";
         QString afterCursor = "```";
         cursor.insertText(beforeCursor + cursorLine + afterCursor);
-        int cursorLineStart = cursor.position() - afterCursor.length() - cursorLine.length();
+        int cursorLineStart =
+            cursor.position() - afterCursor.length() - cursorLine.length();
         cursor.setPosition(cursorLineStart);
         ui.textEditMain->setTextCursor(cursor);
     }
-
 }
 void MainWindow::onAddImg() {
 
     QTextCursor cursor = ui.textEditMain->textCursor();
     // cursor.insertText(R"(<img src='' alt=''>)");
     // cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
-    QString url =
-        "https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";
+    QString url ="https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";
     bool succes;
     url =
         QInputDialog::getText(this, tr("New group"), tr("Enter the group name:"),
@@ -363,22 +360,25 @@ void MainWindow::onAddImg() {
 
     if (succes && !url.isEmpty()) {
         QString selectedText = cursor.selectedText();
-        QString newText =QString(
-                              R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='%1' /></p>)").arg(url);
+        QString newText =
+            QString(R"(<p style="text-align: center;"><img style="margin:2px auto;width:100%;" src='%1' /></p>)").arg(url);
         cursor.insertText(newText);
     } else {
-        cursor.insertText(R"(![Image](https://placehold.co/400x200/28A745/FFFFFF?text=Web+Image))");
+        cursor.insertText(
+            R"(![Image](https://placehold.co/400x200/28A745/FFFFFF?text=Web+Image))");
     }
 }
 // todo add yotube for blog
-void MainWindow::onAddVideo()
-{
+void MainWindow::onAddVideo(){
     QTextCursor cursor = ui.textEditMain->textCursor();
 
     if (cursor.hasSelection()) {   
 
     }
 }
+
+//===========================================file and header functions===========================================
+
 void MainWindow::onToHtml() {
 
     QString markdownText = ui.textEditMain->toPlainText();
@@ -386,28 +386,22 @@ void MainWindow::onToHtml() {
     ui.textEditMain->setPlainText(htmlText);
 }
 
-void MainWindow::onRedo()
-{
-   ui.textEditMain->redo();
+void MainWindow::onRedo() {
+    ui.textEditMain->redo();
 }
 
-void MainWindow::onUndo()
-{
-  ui.textEditMain->undo();
+void MainWindow::onUndo() {
+    ui.textEditMain->undo();
 }
 
-//===========================================file and header functions===========================================
-
-void MainWindow::updateStatusBar()
-{
+void MainWindow::updateStatusBar() {
     statusBar()->showMessage(currentFile);
 }
+
 void MainWindow::onFileOpen() {
 
     /*
-    QString filename = QFileDialog::getOpenFileName(
-        this, tr("Open File"), "/home", tr("Text files (*.*)"));
-
+     //QString fileName = QFileDialog::getOpenFileName(this, "Open File", "", "Text Files (*.*);;All Files (*)");
     if (!filename.isEmpty()) {
         QFile f(filename);
         if (f.open(QFile::ReadOnly)) {
@@ -422,8 +416,9 @@ void MainWindow::onFileOpen() {
         }
     }
     */
+    QString fileName = QFileDialog::getOpenFileName(
+        this, tr("Open File"), "/home", tr("Text files (*.*);;All Files (*)"));
 
-    QString fileName = QFileDialog::getOpenFileName(this, "Open File", "", "Text Files (*.*);;All Files (*)");
     if (!fileName.isEmpty()) {
         QFile file(fileName);
         if (file.open(QFile::ReadOnly | QFile::Text)) {
@@ -456,28 +451,12 @@ void MainWindow::onFileSave() {
     }
 }
 
-void MainWindow::onHtmlExport()
-{
-    QString fileName = QFileDialog::getSaveFileName(this, "Save File As", "",
-                                                    "Text Files (*.html);;All Files (*)");
-    currentFile = fileName;
-    QFile file(fileName);
-    if (file.open(QFile::WriteOnly)) {
-        QTextStream stream(&file);
-        stream.setEncoding(QStringConverter::Utf8);
-        stream << ui.textEditHtml->toPlainText();
-        file.close();
-        updateStatusBar();
-    }
-}
+
 
 void MainWindow::onFileSaveAs() {
 
-    //QString stt = QFileDialog::getSaveFileName(this, tr("Save As "), "/home",
-                                              // tr("Text files (*.html )"));
-
-     QString fileName = QFileDialog::getSaveFileName(this, "Save File As", "",
-                                                    "Text Files (*.MD);;All Files (*)");
+    QString fileName = QFileDialog::getSaveFileName(
+        this, "Save File As", "/home", "Text Files (*.MD);;All Files (*)");
     currentFile = fileName;
     QFile file(fileName);
     if (file.open(QFile::WriteOnly)) {
@@ -491,10 +470,10 @@ void MainWindow::onFileSaveAs() {
 void MainWindow::onExit() {
     QApplication::quit();
 }
+
 void MainWindow::onAbout() {
     QMessageBox::information(this, "info", "Created in Qt.");
 }
-
 
 void MainWindow::onPrint() {
 #ifndef QT_NO_PRINTER
@@ -509,4 +488,25 @@ void MainWindow::onPrint() {
     }
     delete dlg;
 #endif
+}
+
+//===========================================export functions===========================================
+
+void MainWindow::onHtmlExport(){
+    QString fileName = QFileDialog::getSaveFileName(this, "Save File As", "",
+                                                    "Text Files (*.html);;All Files (*)");
+    currentFile = fileName;
+    QFile file(fileName);
+    if (file.open(QFile::WriteOnly)) {
+        QTextStream stream(&file);
+        stream.setEncoding(QStringConverter::Utf8);
+        stream << ui.textEditHtml->toPlainText();
+        file.close();
+        updateStatusBar();
+    }
+}
+
+void MainWindow::onPdfExport()
+{
+    //add pdf
 }

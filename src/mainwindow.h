@@ -54,6 +54,7 @@ private slots:
     void onFileSaveAs();
     void onFileSave();
     void onHtmlExport();
+    void onPdfExport();
     void onExit();
     void onAbout();
     void onPrint();
