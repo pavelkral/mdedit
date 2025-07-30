@@ -32,7 +32,8 @@ qt_add_executable(mdedit
     resource/mdedit.qrc
     resource/mdedit.rc
     README.md LICENSE.txt
-    .gitignore 
+    .gitignore
+    src/responsivetextedit.h src/responsivetextedit.cpp
 )
 
 target_link_libraries(mdedit

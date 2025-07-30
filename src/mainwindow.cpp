@@ -83,6 +83,7 @@ void MainWindow::updatePreview() {
 
     QString markdownText = ui.textEditMain->toPlainText();
     QString htmlText = convertMarkdownToHtml(markdownText);
+   // ui.textEditPreview->setHtmlResponsive(htmlText);
     ui.textEditPreview->setHtml(htmlText);
     ui.textEditHtml->setPlainText(htmlText);
     //ui.textEditPreview->setStyleSheet("h1 { color: red; } ul { color: black; } em { font-style: italic; }");
