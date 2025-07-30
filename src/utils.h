@@ -14,7 +14,7 @@ public:
     Utils &operator=(Utils &&) = delete;
 
     static QString mdToHtml(QString &S);
-    static QString addHtmlStyle(QString &str);
+    static QString addHtmlStyle(const QString &str);
 
 signals:
 };

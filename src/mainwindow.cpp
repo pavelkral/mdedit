@@ -354,8 +354,7 @@ void MainWindow::onAddImg() {
     // cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
     QString url ="https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";
     bool succes;
-    url =
-        QInputDialog::getText(this, tr("New group"), tr("Enter the group name:"),
+    url = QInputDialog::getText(this, tr("New group"), tr("Enter the group name:"),
                                 QLineEdit::Normal, url, &succes);
 
     if (succes && !url.isEmpty()) {
@@ -381,9 +380,15 @@ void MainWindow::onAddVideo(){
 
 void MainWindow::onToHtml() {
 
-    QString markdownText = ui.textEditMain->toPlainText();
-    QString htmlText = Utils::addHtmlStyle(markdownText);
-    ui.textEditMain->setPlainText(htmlText);
+    const QString markdown = ui.textEditMain->toPlainText();
+    if (markdown.trimmed().isEmpty())
+        return;
+
+    const QString html = Utils::addHtmlStyle(markdown);
+
+    //QSignalBlocker blocker(ui.textEditMain);
+    //ui.textEditMain->setAcceptRichText(true);
+    ui.textEditMain->setPlainText(html);
 }
 
 void MainWindow::onRedo() {
@@ -451,12 +456,12 @@ void MainWindow::onFileSave() {
     }
 }
 
-
-
 void MainWindow::onFileSaveAs() {
 
-    QString fileName = QFileDialog::getSaveFileName(
+    const QString fileName = QFileDialog::getSaveFileName(
         this, "Save File As", "/home", "Text Files (*.MD);;All Files (*)");
+
+    if (fileName.isEmpty()) return;
     currentFile = fileName;
     QFile file(fileName);
     if (file.open(QFile::WriteOnly)) {
@@ -493,20 +498,70 @@ void MainWindow::onPrint() {
 //===========================================export functions===========================================
 
 void MainWindow::onHtmlExport(){
-    QString fileName = QFileDialog::getSaveFileName(this, "Save File As", "",
-                                                    "Text Files (*.html);;All Files (*)");
-    currentFile = fileName;
-    QFile file(fileName);
-    if (file.open(QFile::WriteOnly)) {
-        QTextStream stream(&file);
-        stream.setEncoding(QStringConverter::Utf8);
-        stream << ui.textEditHtml->toPlainText();
-        file.close();
-        updateStatusBar();
+    const QString fileName = QFileDialog::getSaveFileName(this, "Save File As", "","Text Files (*.html);;All Files (*)");
+
+    if(!fileName.isEmpty()){
+        currentFile = fileName;
+        QFile file(fileName);
+        if (file.open(QFile::WriteOnly)) {
+            QTextStream stream(&file);
+            stream.setEncoding(QStringConverter::Utf8);
+            stream << ui.textEditHtml->toPlainText();
+            file.close();
+            updateStatusBar();
+        }
     }
 }
 
-void MainWindow::onPdfExport()
-{
-    //add pdf
+void MainWindow::onPdfExport(){
+
+    // QString fileName = QFileDialog::getSaveFileName(this, "Save File As", "",
+    //                                                 "Text Files (*.pdf);;All Files (*)");
+    // if(!fileName.isEmpty()){
+    //     QString html =ui.textEditHtml->toPlainText();
+    //     QTextDocument document;
+    //     document.setHtml(html);
+    //     QPrinter printer(QPrinter::PrinterResolution);
+    //     printer.setOutputFormat(QPrinter::PdfFormat);
+    //     printer.setOutputFileName(fileName);
+    //     printer.setPageMargins(QMarginsF(15, 15, 15, 15));
+    //     QPageLayout pageLayout(QPageSize::A4, QPageLayout::Portrait, QMarginsF(15, 15, 15, 15));
+    //     printer.setPageLayout(pageLayout);
+    //     document.print(&printer);
+    // }
+
+    const QString suggestedName = "export.pdf";
+    QString filePath = QFileDialog::getSaveFileName(
+        this,
+        tr("Save as PDF"),
+        QDir::homePath() + "/" + suggestedName,
+        tr("PDF files (*.pdf)")
+        );
+
+    if (filePath.isEmpty())
+        return;
+
+    if (!filePath.endsWith(".pdf", Qt::CaseInsensitive))
+        filePath += ".pdf";
+
+    QFileInfo fi(filePath);
+    QDir().mkpath(fi.dir().absolutePath());
+
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(filePath);
+    printer.setPageSize(QPageSize(QPageSize::A4));
+    printer.setPageMargins(QMarginsF(12, 12, 12, 12));
+
+    ui.textEditPreview->document()->print(&printer);
+
+    QFileInfo outInfo(filePath);
+    if (!outInfo.exists() || outInfo.size() == 0) {
+        QMessageBox::warning(this, tr("Error"),
+                             tr("PDF not saved:\n%1").arg(filePath));
+        return;
+    }
+
+    QMessageBox::information(this, tr("Succes"),
+                             tr("PDF saved:\n%1").arg(filePath));
 }

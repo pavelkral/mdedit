@@ -4,7 +4,7 @@
 
 Utils::Utils(QObject* parent) : QObject{ parent } {}
 
-QString Utils::mdToHtml(QString& S) {
+QString Utils::mdToHtml( QString& S) {
 
     QString html = S;
 
@@ -100,7 +100,7 @@ QString Utils::mdToHtml(QString& S) {
 
 }
 
-QString Utils::addHtmlStyle(QString& str) {
+QString Utils::addHtmlStyle(const QString& str) {
 
 	// QMessageBox::information(this, "info"," tags ");
     qDebug() << "adding headers";
