@@ -23,6 +23,9 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QLabel" name="label">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string>Source</string>
         </property>
@@ -31,7 +34,7 @@
       <item>
        <widget class="QTextEdit" name="textEditMain">
         <property name="styleSheet">
-         <string notr="true">font: 12pt &quot;Segoe UI&quot;;</string>
+         <string notr="true">font: 14pt &quot;Segoe UI&quot;;</string>
         </property>
        </widget>
       </item>
@@ -138,6 +141,7 @@
    <addaction name="actionLink"/>
    <addaction name="actionCode"/>
    <addaction name="actionImg"/>
+   <addaction name="actionP"/>
   </widget>
   <action name="actionFileOpen">
    <property name="text">
