@@ -135,13 +135,13 @@
    <addaction name="actionH1"/>
    <addaction name="actionH2"/>
    <addaction name="actionH3"/>
+   <addaction name="actionP"/>
    <addaction name="actionBold"/>
    <addaction name="actionItalic"/>
    <addaction name="actionUl"/>
    <addaction name="actionLink"/>
    <addaction name="actionCode"/>
    <addaction name="actionImg"/>
-   <addaction name="actionP"/>
    <addaction name="actionColor"/>
   </widget>
   <action name="actionFileOpen">

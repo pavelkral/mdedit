@@ -14,7 +14,7 @@
 #include "htmlhighlighter.h"
 #include "markdownhighlighter.h"
 #include "utils/stringutils.h"
-#include "utils/colorpicker.h".h"
+#include "utils/colorpicker.h"
 
 extern "C" {
 #include "cmark.h"
@@ -383,6 +383,7 @@ void MainWindow::onAddColor()
 {
     qWarning() << "add color not implemented.";
     ColorPicker picker(this);
+    picker.resize(320,240);
     picker.exec();
 }
 

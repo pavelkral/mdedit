@@ -8,15 +8,15 @@ HtmlHighlighter::HtmlHighlighter(QTextDocument *parent)
 
     // 1. tags ( <h1>, </p>)
     QTextCharFormat tagFormat;
-    tagFormat.setForeground(QColor(85, 200, 200));
+    tagFormat.setForeground(QColor(76,201,255));
     tagFormat.setFontWeight(QFont::Bold);
-    rule.pattern = QRegularExpression(R"(</?\w+.*?>)"); //  tags
+    rule.pattern = QRegularExpression(R"(</?\w+.*?>)");
     rule.format = tagFormat;
     highlightingRules.append(rule);
 
     // 2. atributes ( href=, class=)
     QTextCharFormat attributeFormat;
-    attributeFormat.setForeground(Qt::darkRed);
+    attributeFormat.setForeground(QColor(76,201,255));
     attributeFormat.setFontItalic(true);
     rule.pattern = QRegularExpression(R"(\b([a-zA-Z0-9_-]+)\s*=)");
     rule.format = attributeFormat;
@@ -24,11 +24,11 @@ HtmlHighlighter::HtmlHighlighter(QTextDocument *parent)
 
     // 3. "values"
     QTextCharFormat quotationFormat;
-    quotationFormat.setForeground(QColor(0, 128, 128));
-    rule.pattern = QRegularExpression(R"(".+?")"); //
+    quotationFormat.setForeground(QColor(209,0,0));
+    rule.pattern = QRegularExpression(R"(".+?")");
     rule.format = quotationFormat;
     highlightingRules.append(rule);
-    rule.pattern = QRegularExpression(R"('.+?')"); //
+    rule.pattern = QRegularExpression(R"('.+?')");
     highlightingRules.append(rule);
 
     // 4.comments
@@ -40,7 +40,7 @@ HtmlHighlighter::HtmlHighlighter(QTextDocument *parent)
 
 void HtmlHighlighter::highlightBlock(const QString &text)
 {
-    //  (tagy, atributy, hodnoty)
+    //  (tags, atributs, values)
     for (const HighlightingRule &rule : std::as_const( highlightingRules)) {
         QRegularExpressionMatchIterator matchIterator = rule.pattern.globalMatch(text);
         while (matchIterator.hasNext()) {
