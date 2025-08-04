@@ -4,7 +4,7 @@
       <img src="https://raw.githubusercontent.com/pavelkral/mdedit/refs/heads/main/resource/icons/mdedit.png" width="48" height="48">
     </td>
     <td>
-      <h2>MD and HTML GUI TOOL </h2>
+      <h2>MD and HTML Editor </h2>
     </td>
   </tr>
 </table>
