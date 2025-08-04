@@ -13,7 +13,8 @@
 #include <QRegularExpression>
 #include "htmlhighlighter.h"
 #include "markdownhighlighter.h"
-#include "utils.h"
+#include "utils/stringutils.h"
+#include "utils/colorpicker.h".h"
 
 extern "C" {
 #include "cmark.h"
@@ -56,6 +57,7 @@ MainWindow::MainWindow() {
     connect(ui.actionH1, &QAction::triggered, this, &MainWindow::onAddH1);
     connect(ui.actionH2, &QAction::triggered, this, &MainWindow::onAddH2);
     connect(ui.actionH3, &QAction::triggered, this, &MainWindow::onAddH3);
+    connect(ui.actionColor, &QAction::triggered, this, &MainWindow::onAddColor);
 
 
 
@@ -377,6 +379,13 @@ void MainWindow::onAddVideo(){
     }
 }
 
+void MainWindow::onAddColor()
+{
+    qWarning() << "add color not implemented.";
+    ColorPicker picker(this);
+    picker.exec();
+}
+
 //===========================================file and header functions===========================================
 
 void MainWindow::onToHtml() {
@@ -385,7 +394,7 @@ void MainWindow::onToHtml() {
     if (markdown.trimmed().isEmpty())
         return;
 
-    const QString html = Utils::addHtmlStyle(markdown);
+    const QString html = StringUtils::addHtmlStyle(markdown);
 
     //QSignalBlocker blocker(ui.textEditMain);
     //ui.textEditMain->setAcceptRichText(true);

@@ -1,10 +1,10 @@
-#include "utils.h"
+#include "stringutils.h"
 
 #include <QRegularExpression>
 
-Utils::Utils(QObject* parent) : QObject{ parent } {}
+StringUtils::StringUtils(QObject* parent) : QObject{ parent } {}
 
-QString Utils::mdToHtml( QString& S) {
+QString StringUtils::mdToHtml( QString& S) {
 
     QString html = S;
 
@@ -100,7 +100,7 @@ QString Utils::mdToHtml( QString& S) {
 
 }
 
-QString Utils::addHtmlStyle(const QString& str) {
+QString StringUtils::addHtmlStyle(const QString& str) {
 
 	// QMessageBox::information(this, "info"," tags ");
     qDebug() << "adding headers";

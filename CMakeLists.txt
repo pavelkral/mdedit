@@ -6,7 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_AUTOUIC_SEARCH_PATHS src/forms)
+set(CMAKE_AUTOUIC_SEARCH_PATHS src/ui)
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS
     Core
@@ -20,21 +20,28 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
 add_subdirectory(cmark)
 
 qt_add_executable(mdedit
-    #WIN32 MACOSX_BUNDLE
     src/mainwindow.cpp
     src/mainwindow.h
     src/main.cpp
-    src/utils.h
-    src/utils.cpp
+    src/utils/stringutils.h
+    src/utils/stringutils.cpp
     src/htmlhighlighter.h src/htmlhighlighter.cpp
     src/markdownhighlighter.h src/markdownhighlighter.cpp
-    src/forms/mainwindow.ui
+    src/ui/mainwindow.ui
     resource/mdedit.qrc
     resource/mdedit.rc
     README.md LICENSE.txt
     .gitignore
     src/responsivetextedit.h src/responsivetextedit.cpp
+    src/utils/jsonutils.cpp src/utils/jsonutils.h src/utils/logger.cpp src/utils/logger.h src/utils/colorpicker.cpp src/utils/colorpicker.h
 )
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_target_properties(mdedit PROPERTIES
+        WIN32_EXECUTABLE ON
+        MACOSX_BUNDLE ON
+    )
+endif()
 
 target_link_libraries(mdedit
     PRIVATE

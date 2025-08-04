@@ -11,5 +11,7 @@
         <file>icons/img.png</file>
         <file>icons/ul.png</file>
         <file>icons/video.png</file>
+		<file>icons/p.png</file>
+		<file>icons/color.png</file>
     </qresource>
 </RCC>

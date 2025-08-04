@@ -49,6 +49,7 @@ private slots:
     void onAddCode();
     void onAddImg();
     void onAddVideo();
+    void onAddColor();
 
     void onFileOpen();
     void onFileSaveAs();
