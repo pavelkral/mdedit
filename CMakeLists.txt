@@ -35,6 +35,7 @@ qt_add_executable(mdedit
     resource/mdedit.rc
     src/responsivetextedit.h
     src/responsivetextedit.cpp
+    .gitignore LICENSE.txt README.md
 )
 
 target_include_directories(mdedit PRIVATE
