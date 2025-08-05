@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QStyleFactory>
 #include "mainwindow.h"
-#include "utils/logger.h"
+#include <utils.h>
 
 int main(int argc, char *argv[])
 {

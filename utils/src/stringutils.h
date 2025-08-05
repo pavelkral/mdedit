@@ -1,9 +1,16 @@
 #ifndef STRINGUTILS_H
 #define STRINGUTILS_H
 
+#if defined UTILS
+#define UTILS_COMMON_DLLSPEC Q_DECL_EXPORT
+#else
+#define UTILS_COMMON_DLLSPEC Q_DECL_IMPORT
+#endif
+
+
 #include <QObject>
 
-class StringUtils : public QObject
+class UTILS_COMMON_DLLSPEC StringUtils : public QObject
 {
     Q_OBJECT
 public:

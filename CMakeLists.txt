@@ -13,27 +13,34 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     Gui
     Widgets
     Network
-    NetworkAuth  
+    NetworkAuth
     PrintSupport
+    Xml
 )
 
+
 add_subdirectory(cmark)
+add_subdirectory(utils)
 
 qt_add_executable(mdedit
     src/mainwindow.cpp
     src/mainwindow.h
     src/main.cpp
-    src/utils/stringutils.h
-    src/utils/stringutils.cpp
-    src/htmlhighlighter.h src/htmlhighlighter.cpp
-    src/markdownhighlighter.h src/markdownhighlighter.cpp
+    src/htmlhighlighter.h
+    src/htmlhighlighter.cpp
+    src/markdownhighlighter.h
+    src/markdownhighlighter.cpp
     src/ui/mainwindow.ui
     resource/mdedit.qrc
     resource/mdedit.rc
-    README.md LICENSE.txt
-    .gitignore
-    src/responsivetextedit.h src/responsivetextedit.cpp
-    src/utils/jsonutils.cpp src/utils/jsonutils.h src/utils/logger.cpp src/utils/logger.h src/utils/colorpicker.cpp src/utils/colorpicker.h
+    src/responsivetextedit.h
+    src/responsivetextedit.cpp
+)
+
+target_include_directories(mdedit PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils
+    ${CMAKE_SOURCE_DIR}/utils
+
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
@@ -52,9 +59,9 @@ target_link_libraries(mdedit
     Qt6::NetworkAuth
     Qt6::PrintSupport
     cmark
-
+    utils
 )
-target_link_libraries(mdedit PRIVATE Qt6::Core)
+
 
 include(GNUInstallDirs)
 
@@ -70,8 +77,6 @@ qt_generate_deploy_app_script(
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
 install(SCRIPT ${deploy_script})
-
-
 # debug
 # message(STATUS "Qt6_DIR: ${Qt6_DIR}")
 # message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")

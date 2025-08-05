@@ -1,6 +1,13 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#if defined UTILS
+#define UTILS_COMMON_DLLSPEC Q_DECL_EXPORT
+#else
+#define UTILS_COMMON_DLLSPEC Q_DECL_IMPORT
+#endif
+
+
 #include <QString>
 #include <QFile>
 #include <QTextStream>
@@ -8,7 +15,7 @@
 #include <QDir>
 #include <QApplication>
 
-class Logger {
+class UTILS_COMMON_DLLSPEC Logger {
 public:
     static Logger& instance();
     void log(const QString& message, const QColor& col);
@@ -34,7 +41,7 @@ private:
     bool debug = false;
 };
 
-void myMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg);
+void UTILS_COMMON_DLLSPEC  myMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg);
 
 #define CUSTOM_WARNING(msg) \
 myMessageHandler(QtWarningMsg, QMessageLogContext(__FILE__, __LINE__, Q_FUNC_INFO, nullptr), msg)

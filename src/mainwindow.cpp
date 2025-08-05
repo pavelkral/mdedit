@@ -13,8 +13,8 @@
 #include <QRegularExpression>
 #include "htmlhighlighter.h"
 #include "markdownhighlighter.h"
-#include "utils/stringutils.h"
-#include "utils/colorpicker.h"
+
+#include <utils.h>
 
 extern "C" {
 #include "cmark.h"

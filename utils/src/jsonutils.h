@@ -1,12 +1,18 @@
 #ifndef JSONUTILS_H
 #define JSONUTILS_H
 
+#if defined UTILS
+#define UTILS_COMMON_DLLSPEC Q_DECL_EXPORT
+#else
+#define UTILS_COMMON_DLLSPEC Q_DECL_IMPORT
+
+#endif
 #include <QObject>
 #include <QJsonDocument>
 #include <QString>
 
 
-class JsonUtils : public QObject
+class UTILS_COMMON_DLLSPEC JsonUtils : public QObject
 {
     Q_OBJECT
 

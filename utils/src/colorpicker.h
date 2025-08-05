@@ -1,6 +1,12 @@
 #ifndef COLORPICKER_H
 #define COLORPICKER_H
 
+#if defined UTILS
+#define UTILS_COMMON_DLLSPEC Q_DECL_EXPORT
+#else
+#define UTILS_COMMON_DLLSPEC Q_DECL_IMPORT
+#endif
+
 #include <QWidget>
 #include <QColor>
 #include <QDialog>
@@ -11,7 +17,7 @@ class QPushButton;
 class QLineEdit;
 
 
-class ColorPicker : public QDialog
+class UTILS_COMMON_DLLSPEC ColorPicker : public QDialog
 {
     Q_OBJECT
 
