@@ -16,6 +16,7 @@ find_package(Qt6 6.5 REQUIRED COMPONENTS
     NetworkAuth
     PrintSupport
     Xml
+    QmlModels
 )
 
 
@@ -36,6 +37,7 @@ qt_add_executable(mdedit
     src/responsivetextedit.h
     src/responsivetextedit.cpp
     .gitignore LICENSE.txt README.md
+    src/parentdirproxymodel.h src/parentdirproxymodel.cpp
 )
 
 target_include_directories(mdedit PRIVATE
@@ -59,6 +61,7 @@ target_link_libraries(mdedit
     Qt6::Network
     Qt6::NetworkAuth
     Qt6::PrintSupport
+    Qt6::QmlModels
     cmark
     utils
 )

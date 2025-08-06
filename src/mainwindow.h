@@ -3,6 +3,7 @@
 #define MAINWINDOW_H
 
 #include "ui_mainwindow.h"
+#include <QFileSystemModel>
 #include <QMainWindow>
 
 class QNetworkAccessManager;
@@ -62,8 +63,11 @@ private slots:
     void onToHtml();
     void onRedo();
     void onUndo();
-
+    void on_fileView_doubleClicked(const QModelIndex &index);
+      void on_backButton_clicked();
 private:
+    QFileSystemModel *m_fileSystemModel;
+    QString m_currentPath;
 };
 
 #endif

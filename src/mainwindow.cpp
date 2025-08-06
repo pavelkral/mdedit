@@ -13,7 +13,9 @@
 #include <QRegularExpression>
 #include "htmlhighlighter.h"
 #include "markdownhighlighter.h"
+#include "parentdirproxymodel.h"
 
+#include <QFileSystemModel>
 #include <utils.h>
 
 extern "C" {
@@ -27,7 +29,23 @@ MainWindow::MainWindow() {
     setWindowIcon(QIcon("img/mdedit.png"));
     connect(ui.textEditMain, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
     QString filename = "";
-    updatePreview();
+    m_fileSystemModel = new QFileSystemModel(this);
+    m_fileSystemModel->setRootPath(QDir::homePath());
+
+    ParentDirProxyModel* proxyModel = new ParentDirProxyModel(this);
+    proxyModel->setSourceModel(m_fileSystemModel);
+
+    ui.fileView->setModel(proxyModel);
+
+    ui.fileView->hideColumn(1);
+    ui.fileView->hideColumn(2);
+    ui.fileView->hideColumn(3);
+
+ ui.fileView->setIndentation(0);
+    m_currentPath = QDir::homePath();
+    QModelIndex homeIndex = m_fileSystemModel->index(m_currentPath);
+    ui.fileView->setRootIndex(proxyModel->mapFromSource(homeIndex));
+
     networkManager = new QNetworkAccessManager(this);
     resize(1280,800);
     highlighter = new HtmlHighlighter(ui.textEditHtml->document());
@@ -58,8 +76,8 @@ MainWindow::MainWindow() {
     connect(ui.actionH2, &QAction::triggered, this, &MainWindow::onAddH2);
     connect(ui.actionH3, &QAction::triggered, this, &MainWindow::onAddH3);
     connect(ui.actionColor, &QAction::triggered, this, &MainWindow::onAddColor);
-
-
+    connect(ui.fileView, &QTreeView::doubleClicked, this, &MainWindow::on_fileView_doubleClicked);
+    connect(ui.backButton, &QPushButton::clicked, this, &MainWindow::on_backButton_clicked);
 
     ui.textEditMain->setPlainText(
         "# First level heading\n\n"
@@ -575,4 +593,56 @@ void MainWindow::onPdfExport(){
 
     QMessageBox::information(this, tr("Succes"),
                              tr("PDF saved:\n%1").arg(filePath));
+}
+
+void MainWindow::on_backButton_clicked()
+{
+    ParentDirProxyModel* proxyModel = qobject_cast<ParentDirProxyModel*>(ui.fileView->model());
+    if (!proxyModel) {
+        return;
+    }
+
+    QDir dir(m_currentPath);
+    if (dir.cdUp()) {
+        m_currentPath = dir.absolutePath(); // Vraťte se o jednu složku zpět
+
+        QModelIndex newSourceIndex = m_fileSystemModel->index(m_currentPath);
+        if (newSourceIndex.isValid()) {
+            QModelIndex newProxyIndex = proxyModel->mapFromSource(newSourceIndex);
+            ui.fileView->setRootIndex(newProxyIndex);
+        }
+    }
+}
+void MainWindow::on_fileView_doubleClicked(const QModelIndex &index)
+{
+    if (!index.isValid()) {
+        return;
+    }
+
+    ParentDirProxyModel* proxyModel = qobject_cast<ParentDirProxyModel*>(ui.fileView->model());
+    if (!proxyModel) {
+        return;
+    }
+
+    QModelIndex sourceIndex = proxyModel->mapToSource(index);
+    if (!sourceIndex.isValid()) {
+        return;
+    }
+
+    QString filePath = m_fileSystemModel->filePath(sourceIndex);
+    QFileInfo fileInfo(filePath);
+
+    if (fileInfo.isDir()) {
+        m_currentPath = filePath; // Uložíme novou cestu
+        QModelIndex newRootIndex = proxyModel->mapFromSource(m_fileSystemModel->index(m_currentPath));
+        ui.fileView->setRootIndex(newRootIndex);
+    } else if (fileInfo.isFile()) {
+        QFile file(filePath);
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&file);
+            ui.textEditMain->setPlainText(in.readAll());
+            file.close();
+            setWindowTitle(fileInfo.fileName());
+        }
+    }
 }
