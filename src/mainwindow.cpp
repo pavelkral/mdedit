@@ -13,9 +13,10 @@
 #include <QRegularExpression>
 #include "htmlhighlighter.h"
 #include "markdownhighlighter.h"
-#include "parentdirproxymodel.h"
+//#include "parentdirproxymodel.h"
 
 #include <QFileSystemModel>
+#include <QSplitter>
 #include <utils.h>
 
 extern "C" {
@@ -27,41 +28,33 @@ MainWindow::MainWindow() {
     ui.setupUi(this);
     setWindowTitle(tr("Wedit"));
     setWindowIcon(QIcon("img/mdedit.png"));
-    connect(ui.textEditMain, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
     QString filename = "";
+
     m_fileSystemModel = new QFileSystemModel(this);
+    m_fileSystemModel->setFilter(QDir::AllEntries | QDir::NoDot);
     m_fileSystemModel->setRootPath(QDir::homePath());
 
-    ParentDirProxyModel* proxyModel = new ParentDirProxyModel(this);
-    proxyModel->setSourceModel(m_fileSystemModel);
+    ui.fileView1->setModel(m_fileSystemModel);
+    ui.fileView1->setRootIndex(m_fileSystemModel->index(QDir::homePath()));
 
-    ui.fileView->setModel(proxyModel);
-
-    ui.fileView->hideColumn(1);
-    ui.fileView->hideColumn(2);
-    ui.fileView->hideColumn(3);
-
- ui.fileView->setIndentation(0);
-    m_currentPath = QDir::homePath();
-    QModelIndex homeIndex = m_fileSystemModel->index(m_currentPath);
-    ui.fileView->setRootIndex(proxyModel->mapFromSource(homeIndex));
 
     networkManager = new QNetworkAccessManager(this);
     resize(1280,800);
     highlighter = new HtmlHighlighter(ui.textEditHtml->document());
     mdhighlighter = new MarkdownHighlighter(ui.textEditMain->document());
 
+    connect(ui.textEditMain, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
     connect(ui.actionFileOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
     connect(ui.actionFileSave, &QAction::triggered, this, &MainWindow::onFileSave);
     connect(ui.actionFileSaveAs, &QAction::triggered, this, &MainWindow::onFileSaveAs);
-	connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
+    connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
     connect(ui.actionExportHtml,&QAction::triggered, this, &MainWindow::onHtmlExport);
     connect(ui.actionExportPdf,&QAction::triggered, this, &MainWindow::onPdfExport);
-	connect(ui.actionExit, &QAction::triggered, this, &MainWindow::onExit);
-	connect(ui.actionAbout, &QAction::triggered, this, &MainWindow::onAbout);
-	connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
-	connect(ui.actionUndo, &QAction::triggered, this, &MainWindow::onUndo);
-	connect(ui.actionRedo, &QAction::triggered, this, &MainWindow::onRedo);
+    connect(ui.actionExit, &QAction::triggered, this, &MainWindow::onExit);
+    connect(ui.actionAbout, &QAction::triggered, this, &MainWindow::onAbout);
+    connect(ui.actionPrint, &QAction::triggered, this, &MainWindow::onPrint);
+    connect(ui.actionUndo, &QAction::triggered, this, &MainWindow::onUndo);
+    connect(ui.actionRedo, &QAction::triggered, this, &MainWindow::onRedo);
     connect(ui.actionAddStyle, &QAction::triggered, this, &MainWindow::onToHtml);
 
     connect(ui.actionBold, &QAction::triggered, this, &MainWindow::onAddBold);
@@ -76,8 +69,8 @@ MainWindow::MainWindow() {
     connect(ui.actionH2, &QAction::triggered, this, &MainWindow::onAddH2);
     connect(ui.actionH3, &QAction::triggered, this, &MainWindow::onAddH3);
     connect(ui.actionColor, &QAction::triggered, this, &MainWindow::onAddColor);
-    connect(ui.fileView, &QTreeView::doubleClicked, this, &MainWindow::on_fileView_doubleClicked);
-    connect(ui.backButton, &QPushButton::clicked, this, &MainWindow::on_backButton_clicked);
+    connect(ui.fileView1, &QListView::doubleClicked, this, &MainWindow::on_fileView_doubleClicked);
+   // connect(ui.backButton, &QPushButton::clicked, this, &MainWindow::on_backButton_clicked);
 
     ui.textEditMain->setPlainText(
         "# First level heading\n\n"
@@ -93,6 +86,21 @@ MainWindow::MainWindow() {
         "```\n"
         );
 
+    QWidget* widget1 = new QWidget(this);
+    widget1->setLayout(ui.fileLayout);
+    widget1->setMaximumWidth(240);
+    QWidget* widget2 = new QWidget(this);
+    widget2->setLayout(ui.editLayout);
+
+    QWidget* widget3 = new QWidget(this);
+    widget3->setLayout(ui.previewLayout);
+
+    QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
+    splitter->addWidget(widget1);
+    splitter->addWidget(widget2);
+    splitter->addWidget(widget3);
+
+    setCentralWidget(splitter);
     updatePreview();
 }
 
@@ -597,21 +605,7 @@ void MainWindow::onPdfExport(){
 
 void MainWindow::on_backButton_clicked()
 {
-    ParentDirProxyModel* proxyModel = qobject_cast<ParentDirProxyModel*>(ui.fileView->model());
-    if (!proxyModel) {
-        return;
-    }
 
-    QDir dir(m_currentPath);
-    if (dir.cdUp()) {
-        m_currentPath = dir.absolutePath(); // Vraťte se o jednu složku zpět
-
-        QModelIndex newSourceIndex = m_fileSystemModel->index(m_currentPath);
-        if (newSourceIndex.isValid()) {
-            QModelIndex newProxyIndex = proxyModel->mapFromSource(newSourceIndex);
-            ui.fileView->setRootIndex(newProxyIndex);
-        }
-    }
 }
 void MainWindow::on_fileView_doubleClicked(const QModelIndex &index)
 {
@@ -619,30 +613,31 @@ void MainWindow::on_fileView_doubleClicked(const QModelIndex &index)
         return;
     }
 
-    ParentDirProxyModel* proxyModel = qobject_cast<ParentDirProxyModel*>(ui.fileView->model());
-    if (!proxyModel) {
-        return;
-    }
 
-    QModelIndex sourceIndex = proxyModel->mapToSource(index);
-    if (!sourceIndex.isValid()) {
-        return;
-    }
-
-    QString filePath = m_fileSystemModel->filePath(sourceIndex);
+    QString filePath = m_fileSystemModel->filePath(index);
     QFileInfo fileInfo(filePath);
 
-    if (fileInfo.isDir()) {
-        m_currentPath = filePath; // Uložíme novou cestu
-        QModelIndex newRootIndex = proxyModel->mapFromSource(m_fileSystemModel->index(m_currentPath));
-        ui.fileView->setRootIndex(newRootIndex);
-    } else if (fileInfo.isFile()) {
-        QFile file(filePath);
+
+    QFileInfo info = m_fileSystemModel->fileInfo(index);
+
+    if (info.fileName() == "..") {
+        // Přejdi do nadřazené složky
+        QDir dir = info.dir();
+        dir.cdUp();
+        ui.fileView1->setRootIndex(m_fileSystemModel->index(dir.absolutePath()));
+    }
+    else if (info.isDir()) {
+        m_currentPath = filePath;
+        ui.fileView1->setRootIndex(index);
+    }
+    else if (info.isFile()) {
+        QFile file(info.absoluteFilePath());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
             ui.textEditMain->setPlainText(in.readAll());
             file.close();
-            setWindowTitle(fileInfo.fileName());
+        } else {
+            QMessageBox::warning(this, "Chyba", "Nelze otevřít soubor.");
         }
     }
 }
