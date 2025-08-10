@@ -75,7 +75,7 @@ MainWindow::MainWindow() {
     connect(ui.actionH3, &QAction::triggered, this, &MainWindow::onAddH3);
     connect(ui.actionColor, &QAction::triggered, this, &MainWindow::onAddColor);
     connect(ui.fileView1, &QListView::doubleClicked, this, &MainWindow::onFileViewDoubleClicked);
-   // connect(ui.backButton, &QPushButton::clicked, this, &MainWindow::on_backButton_clicked);
+
 
     editor->setPlainText(
         "# First level heading\n\n"
