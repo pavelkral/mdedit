@@ -427,7 +427,7 @@ void MainWindow::onAddVideo(){
 
 void MainWindow::onAddColor()
 {
-    qWarning() << "add color not implemented.";
+    //qWarning() << "add color not implemented.";
     ColorPicker picker(this);
     picker.resize(320,240);
     picker.exec();
@@ -651,7 +651,9 @@ void MainWindow::onFileViewDoubleClicked(const QModelIndex &index)
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
             editor->setPlainText(in.readAll());
+            currentFile = info.absoluteFilePath();
             file.close();
+            updateStatusBar();
         } else {
             QMessageBox::warning(this, "Chyba", "Nelze otevřít soubor.");
         }
