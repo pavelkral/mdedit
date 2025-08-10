@@ -18,9 +18,11 @@
 #include <QFileSystemModel>
 #include <QSplitter>
 #include <utils.h>
+#include "codeeditor.h"
 
 extern "C" {
 #include "cmark.h"
+
 }
 
 MainWindow::MainWindow() {
@@ -36,14 +38,17 @@ MainWindow::MainWindow() {
 
     ui.fileView1->setModel(m_fileSystemModel);
     ui.fileView1->setRootIndex(m_fileSystemModel->index(QDir::homePath()));
-
+    ui.textEditPreview->setReadOnly(true);
+    ui.textEditHtml->setReadOnly(true);
+    editor = new CodeEditor(this);
+    ui.editorLayout->addWidget(editor);
 
     networkManager = new QNetworkAccessManager(this);
-    resize(1280,800);
+    resize(1600,900);
     highlighter = new HtmlHighlighter(ui.textEditHtml->document());
-    mdhighlighter = new MarkdownHighlighter(ui.textEditMain->document());
+    mdhighlighter = new MarkdownHighlighter(editor->document());
 
-    connect(ui.textEditMain, &QTextEdit::textChanged, this, &MainWindow::updatePreview);
+    connect(editor, &QPlainTextEdit::textChanged, this, &MainWindow::updatePreview);
     connect(ui.actionFileOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
     connect(ui.actionFileSave, &QAction::triggered, this, &MainWindow::onFileSave);
     connect(ui.actionFileSaveAs, &QAction::triggered, this, &MainWindow::onFileSaveAs);
@@ -72,7 +77,7 @@ MainWindow::MainWindow() {
     connect(ui.fileView1, &QListView::doubleClicked, this, &MainWindow::on_fileView_doubleClicked);
    // connect(ui.backButton, &QPushButton::clicked, this, &MainWindow::on_backButton_clicked);
 
-    ui.textEditMain->setPlainText(
+    editor->setPlainText(
         "# First level heading\n\n"
         "This is *italics* and this is **bold** text.\n\n"
         "## Subheading\n\n"
@@ -85,7 +90,19 @@ MainWindow::MainWindow() {
         "int x = 5;\n"
         "```\n"
         );
-
+    editor->setPlainText(
+        "# First level heading\n\n"
+        "This is *italics* and this is **bold** text.\n\n"
+        "## Subheading\n\n"
+        "- List item 1\n- List item 2\n\n"
+        "Link to [Qt framework](https://www.qt.io/).\n\n"
+        "![Image from web](https://placehold.co/400x200/28A745/FFFFFF?text=Web+Image)\n\n"
+        "Inline code: `int main() {}`\n\n"
+        "```cpp\n"
+        "// Code block\n"
+        "int x = 5;\n"
+        "```\n"
+        );
     QWidget* widget1 = new QWidget(this);
     widget1->setLayout(ui.fileLayout);
     widget1->setMaximumWidth(240);
@@ -105,11 +122,14 @@ MainWindow::MainWindow() {
 }
 
 MainWindow::~MainWindow() {
-
+    delete networkManager;
+    delete highlighter;
+    delete mdhighlighter;
+    delete editor;
 }
 void MainWindow::updatePreview() {
 
-    QString markdownText = ui.textEditMain->toPlainText();
+    QString markdownText = editor->toPlainText();
     QString htmlText = convertMarkdownToHtml(markdownText);
    // ui.textEditPreview->setHtmlResponsive(htmlText);
     ui.textEditPreview->setHtml(htmlText);
@@ -200,11 +220,11 @@ void MainWindow::insertImageProgrammatically() {
         return;
     }
 
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
     cursor.movePosition(QTextCursor::End);
 
     QUrl imageUrl = QUrl::fromLocalFile(imagePath);
-    ui.textEditMain->document()->addResource(QTextDocument::ImageResource, imageUrl,QVariant(imageUrl));
+    editor->document()->addResource(QTextDocument::ImageResource, imageUrl,QVariant(imageUrl));
 
     QTextImageFormat imageFormat;
     imageFormat.setName(imageUrl.toString());
@@ -217,7 +237,7 @@ void MainWindow::insertImageProgrammatically() {
 
 void MainWindow::onAddH1() {
 
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -234,7 +254,7 @@ void MainWindow::onAddH1() {
 
 void MainWindow::onAddH2()
 {
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -252,7 +272,7 @@ void MainWindow::onAddH2()
 
 void MainWindow::onAddH3()
 {
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -269,7 +289,7 @@ void MainWindow::onAddH3()
 
 void MainWindow::onAddBold()
 {
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -286,13 +306,13 @@ void MainWindow::onAddBold()
         cursor.setPosition(originalPos + QString("**").length());
         cursor.insertText("**");
         cursor.setPosition(originalPos + QString("**").length());
-        ui.textEditMain->setTextCursor(cursor);
+        editor->setTextCursor(cursor);
     }
 }
 
 void MainWindow::onAddItalic()
 {
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -307,14 +327,14 @@ void MainWindow::onAddItalic()
         cursor.setPosition(originalPos + QString("*").length());
         cursor.insertText("*");
         cursor.setPosition(originalPos + QString("*").length());
-        ui.textEditMain->setTextCursor(cursor);
+        editor->setTextCursor(cursor);
     }
 
 }
 
 void MainWindow::onAddP()
 {
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
     QString selectedText = cursor.selectedText();
     QString newText = QString("\n%1\n").arg(selectedText);
     cursor.insertText(newText);
@@ -322,7 +342,7 @@ void MainWindow::onAddP()
 
 void MainWindow::onAddLink()
 {
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -337,13 +357,13 @@ void MainWindow::onAddLink()
         cursor.setPosition(originalPos + QString("\n[link]").length());
         cursor.insertText("(url)\n");
         cursor.setPosition(originalPos + QString("\n[link]").length());
-        ui.textEditMain->setTextCursor(cursor);
+        editor->setTextCursor(cursor);
     }
 
 }
 
 void MainWindow::onAddUl(){
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -357,7 +377,7 @@ void MainWindow::onAddUl(){
 }
 
 void MainWindow::onAddCode(){
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
 
     if (cursor.hasSelection()) {
 
@@ -365,7 +385,7 @@ void MainWindow::onAddCode(){
         QString newText = QString("```%1```  \n").arg(selectedText);
         cursor.insertText(newText);
     } else {
-        QTextCursor cursor = ui.textEditMain->textCursor();
+        QTextCursor cursor = editor->textCursor();
         QString beforeCursor = "```cpp\n";
         QString cursorLine = "code\n";
         QString afterCursor = "```";
@@ -373,12 +393,12 @@ void MainWindow::onAddCode(){
         int cursorLineStart =
             cursor.position() - afterCursor.length() - cursorLine.length();
         cursor.setPosition(cursorLineStart);
-        ui.textEditMain->setTextCursor(cursor);
+        editor->setTextCursor(cursor);
     }
 }
 void MainWindow::onAddImg() {
 
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
     // cursor.insertText(R"(<img src='' alt=''>)");
     // cursor.movePosition(QTextCursor::PreviousCharacter,QTextCursor::KeepAnchor);
     QString url ="https://www.pavelkral.net/images/aplication/min/min_qmetronom.png";
@@ -398,7 +418,7 @@ void MainWindow::onAddImg() {
 }
 // todo add yotube for blog
 void MainWindow::onAddVideo(){
-    QTextCursor cursor = ui.textEditMain->textCursor();
+    QTextCursor cursor = editor->textCursor();
 
     if (cursor.hasSelection()) {   
 
@@ -417,23 +437,23 @@ void MainWindow::onAddColor()
 
 void MainWindow::onToHtml() {
 
-    const QString markdown = ui.textEditMain->toPlainText();
+    const QString markdown = editor->toPlainText();
     if (markdown.trimmed().isEmpty())
         return;
 
     const QString html = StringUtils::addHtmlStyle(markdown);
 
-    //QSignalBlocker blocker(ui.textEditMain);
-    //ui.textEditMain->setAcceptRichText(true);
-    ui.textEditMain->setPlainText(html);
+    //QSignalBlocker blocker(editor);
+    //editor->setAcceptRichText(true);
+    editor->setPlainText(html);
 }
 
 void MainWindow::onRedo() {
-    ui.textEditMain->redo();
+    editor->redo();
 }
 
 void MainWindow::onUndo() {
-    ui.textEditMain->undo();
+    editor->undo();
 }
 
 void MainWindow::updateStatusBar() {
@@ -466,7 +486,7 @@ void MainWindow::onFileOpen() {
         if (file.open(QFile::ReadOnly | QFile::Text)) {
             QTextStream in(&file);
             QString text = in.readAll();
-            ui.textEditMain->setPlainText(text);
+            editor->setPlainText(text);
             file.close();
             currentFile = fileName;
             updateStatusBar();
@@ -485,7 +505,7 @@ void MainWindow::onFileSave() {
     QFile file(currentFile);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(&file);
-        out << ui.textEditMain->toPlainText();
+        out << editor->toPlainText();
         file.close();
         updateStatusBar();
     } else {
@@ -504,7 +524,7 @@ void MainWindow::onFileSaveAs() {
     if (file.open(QFile::WriteOnly)) {
         QTextStream stream(&file);
         stream.setEncoding(QStringConverter::Utf8);
-        stream << ui.textEditMain->toPlainText();
+        stream << editor->toPlainText();
         file.close();
         updateStatusBar();
     }
@@ -522,11 +542,11 @@ void MainWindow::onPrint() {
     QPrinter printer(QPrinter::HighResolution);
     printer.setFullPage(true);
     QPrintDialog *dlg = new QPrintDialog(&printer, this);
-    if (ui.textEditMain->textCursor().hasSelection())
+    if (editor->textCursor().hasSelection())
         dlg->setOption(QAbstractPrintDialog::PrintSelection, true);
     dlg->setWindowTitle(tr("Print Document"));
     if (dlg->exec() == QDialog::Accepted) {
-        ui.textEditMain->print(&printer);
+        editor->print(&printer);
     }
     delete dlg;
 #endif
@@ -634,7 +654,7 @@ void MainWindow::on_fileView_doubleClicked(const QModelIndex &index)
         QFile file(info.absoluteFilePath());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
-            ui.textEditMain->setPlainText(in.readAll());
+            editor->setPlainText(in.readAll());
             file.close();
         } else {
             QMessageBox::warning(this, "Chyba", "Nelze otevřít soubor.");

@@ -10,6 +10,7 @@ class QNetworkAccessManager;
 class QNetworkReply;
 class HtmlHighlighter;
 class MarkdownHighlighter;
+class CodeEditor;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -29,6 +30,7 @@ private:
     QNetworkAccessManager *networkManager;
     HtmlHighlighter *highlighter;
     MarkdownHighlighter *mdhighlighter;
+    CodeEditor *editor;
     QSet<QUrl> downloadedImageUrls;
     void findAndDownloadImages(const QString &html);
     void updateStatusBar();

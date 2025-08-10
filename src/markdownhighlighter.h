@@ -27,6 +27,10 @@ private:
     QRegularExpression codeBlockStartExpression;
     QRegularExpression codeBlockEndExpression;
     QTextCharFormat codeBlockFormat;
+
+    QRegularExpression commentStartExpression;
+    QRegularExpression commentEndExpression;
+    QTextCharFormat multiLineCommentFormat;
 };
 
 #endif // MARKDOWNHIGHLIGHTER_H

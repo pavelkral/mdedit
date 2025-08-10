@@ -66,6 +66,40 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
     codeBlockFormat.setFontFamily("Courier");
     codeBlockStartExpression = QRegularExpression(R"(^```)");
     codeBlockEndExpression = QRegularExpression(R"(^```$)");
+
+
+ //==========================================================================================
+   //==========================================================================================
+
+    QTextCharFormat tagFormat;
+    tagFormat.setForeground(QColor(76,201,255));
+    tagFormat.setFontWeight(QFont::Bold);
+    rule.pattern = QRegularExpression(R"(</?\w+.*?>)");
+    rule.format = tagFormat;
+    highlightingRules.append(rule);
+
+    // 2. atributes ( href=, class=)
+    QTextCharFormat attributeFormat;
+    attributeFormat.setForeground(QColor(76,201,255));
+    attributeFormat.setFontItalic(true);
+    rule.pattern = QRegularExpression(R"(\b([a-zA-Z0-9_-]+)\s*=)");
+    rule.format = attributeFormat;
+    highlightingRules.append(rule);
+
+    // 3. "values"
+    QTextCharFormat quotationFormat;
+    quotationFormat.setForeground(QColor(209,0,0));
+    rule.pattern = QRegularExpression(R"(".+?")");
+    rule.format = quotationFormat;
+    highlightingRules.append(rule);
+    rule.pattern = QRegularExpression(R"('.+?')");
+    highlightingRules.append(rule);
+
+    // 4.comments
+    multiLineCommentFormat.setForeground(Qt::darkGreen);
+    multiLineCommentFormat.setFontItalic(true);
+    commentStartExpression = QRegularExpression(R"(<!--)");
+    commentEndExpression = QRegularExpression(R"(-->)");
 }
 
 

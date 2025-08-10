@@ -38,6 +38,7 @@ qt_add_executable(mdedit
     src/responsivetextedit.cpp
     .gitignore LICENSE.txt README.md
     src/parentdirproxymodel.h src/parentdirproxymodel.cpp
+    src/codeeditor.h src/codeeditor.cpp
 )
 
 target_include_directories(mdedit PRIVATE
