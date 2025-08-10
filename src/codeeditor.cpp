@@ -72,7 +72,7 @@ void CodeEditor::highlightCurrentLine() {
 void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event) {
     QPainter painter(lineNumberArea);
 
-    // černé pozadí
+
     painter.fillRect(event->rect(), QColor(20, 20, 20));
 
     QTextBlock block = firstVisibleBlock();
@@ -83,7 +83,7 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event) {
     QFont f = font();
     painter.setFont(f);
 
-    QColor textColor(150, 150, 150); // tmavě šedá
+    QColor textColor(150, 150, 150);
 
     int leftPadding = 10;
     int rightPadding = 10;
@@ -93,9 +93,9 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event) {
             QString number = QString::number(blockNumber + 1);
             painter.setPen(textColor);
             painter.drawText(
-                leftPadding, // posun vlevo
+                leftPadding,
                 top,
-                lineNumberArea->width() - leftPadding - rightPadding, // dostupná šířka pro text
+                lineNumberArea->width() - leftPadding - rightPadding,
                 fontMetrics().height(),
                 Qt::AlignRight,
                 number

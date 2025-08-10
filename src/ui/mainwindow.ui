@@ -28,22 +28,18 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="fileLayout">
-     <item row="0" column="0">
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>File System</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
      <item row="1" column="0">
       <widget class="QListView" name="fileView1"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>File System</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -89,7 +85,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="layoutWidget2">
     <property name="geometry">
      <rect>
       <x>550</x>

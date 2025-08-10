@@ -6,7 +6,6 @@
 
 class LineNumberArea;
 
-// Hlavní editor
 class CodeEditor : public QPlainTextEdit {
     Q_OBJECT
 public:
@@ -27,7 +26,6 @@ private:
     QWidget *lineNumberArea;
 };
 
-// Widget pro čísla řádků
 class LineNumberArea : public QWidget {
 public:
     explicit LineNumberArea(CodeEditor *editor) : QWidget(editor), codeEditor(editor) {}

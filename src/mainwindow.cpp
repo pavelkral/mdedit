@@ -74,7 +74,7 @@ MainWindow::MainWindow() {
     connect(ui.actionH2, &QAction::triggered, this, &MainWindow::onAddH2);
     connect(ui.actionH3, &QAction::triggered, this, &MainWindow::onAddH3);
     connect(ui.actionColor, &QAction::triggered, this, &MainWindow::onAddColor);
-    connect(ui.fileView1, &QListView::doubleClicked, this, &MainWindow::on_fileView_doubleClicked);
+    connect(ui.fileView1, &QListView::doubleClicked, this, &MainWindow::onFileViewDoubleClicked);
    // connect(ui.backButton, &QPushButton::clicked, this, &MainWindow::on_backButton_clicked);
 
     editor->setPlainText(
@@ -623,11 +623,7 @@ void MainWindow::onPdfExport(){
                              tr("PDF saved:\n%1").arg(filePath));
 }
 
-void MainWindow::on_backButton_clicked()
-{
-
-}
-void MainWindow::on_fileView_doubleClicked(const QModelIndex &index)
+void MainWindow::onFileViewDoubleClicked(const QModelIndex &index)
 {
     if (!index.isValid()) {
         return;
@@ -641,7 +637,7 @@ void MainWindow::on_fileView_doubleClicked(const QModelIndex &index)
     QFileInfo info = m_fileSystemModel->fileInfo(index);
 
     if (info.fileName() == "..") {
-        // Přejdi do nadřazené složky
+
         QDir dir = info.dir();
         dir.cdUp();
         ui.fileView1->setRootIndex(m_fileSystemModel->index(dir.absolutePath()));

@@ -8,7 +8,7 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
 
     // headings (#, ##, ...) -
     QTextCharFormat headingFormat;
-    headingFormat.setForeground(QColor(255, 140, 0)); // Tmavě oranžová
+    headingFormat.setForeground(QColor(255, 140, 0));
     headingFormat.setFontWeight(QFont::Bold);
     rule.pattern = QRegularExpression(R"(^#{1,6}.*$)");
     rule.format = headingFormat;
@@ -16,7 +16,7 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
 
     // list (- text)
     QTextCharFormat listFormat;
-    listFormat.setForeground(QColor(139, 69, 19)); // Hnědá
+    listFormat.setForeground(QColor(139, 69, 19));
     rule.pattern = QRegularExpression(R"(^\s*-\s.*$)");
     rule.format = listFormat;
     highlightingRules.append(rule);
@@ -68,7 +68,7 @@ MarkdownHighlighter::MarkdownHighlighter(QTextDocument *parent)
     codeBlockEndExpression = QRegularExpression(R"(^```$)");
 
 
- //==========================================================================================
+ //====================================html======================================================
    //==========================================================================================
 
     QTextCharFormat tagFormat;

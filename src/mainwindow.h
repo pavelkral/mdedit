@@ -34,8 +34,10 @@ private:
     QSet<QUrl> downloadedImageUrls;
     void findAndDownloadImages(const QString &html);
     void updateStatusBar();
+    QFileSystemModel *m_fileSystemModel;
+    QString m_currentPath;
 
-protected:
+
 private slots:
 
     void updatePreview();
@@ -65,11 +67,10 @@ private slots:
     void onToHtml();
     void onRedo();
     void onUndo();
-    void on_fileView_doubleClicked(const QModelIndex &index);
-      void on_backButton_clicked();
-private:
-    QFileSystemModel *m_fileSystemModel;
-    QString m_currentPath;
+    void onFileViewDoubleClicked(const QModelIndex &index);
+
+protected:
+
 };
 
 #endif
