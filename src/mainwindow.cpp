@@ -28,7 +28,7 @@ extern "C" {
 MainWindow::MainWindow() {
 
     ui.setupUi(this);
-    setWindowTitle(tr("Wedit"));
+    setWindowTitle(tr("Mdedit"));
     setWindowIcon(QIcon("img/mdedit.png"));
     QString filename = "";
 
