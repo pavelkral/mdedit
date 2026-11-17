@@ -19,6 +19,7 @@ private:
 
 public:
     MainWindow();
+    bool openFile(const QString &filePath);
     QString convertMarkdownToHtml(const QString &markdown);
     void insertImageFromWeb();
     void insertImageProgrammatically();

@@ -448,41 +448,43 @@ void MainWindow::updateStatusBar() {
     statusBar()->showMessage(currentFile);
 }
 
-void MainWindow::onFileOpen() {
-
-    /*
-     //QString fileName = QFileDialog::getOpenFileName(this, "Open File", "", "Text Files (*.*);;All Files (*)");
-    if (!filename.isEmpty()) {
-        QFile f(filename);
-        if (f.open(QFile::ReadOnly)) {
-            QByteArray data = f.readAll();
-            QString str = QString::fromUtf8(data);
-            if (Qt::mightBeRichText(str)) {
-                ui.ted->setPlainText(str);
-            } else {
-                str = QString::fromLocal8Bit(data);
-
-            }
-        }
+bool MainWindow::openFile(const QString &filePath) {
+    if (filePath.isEmpty()) {
+        return false;
     }
-    */
+
+    QFileInfo info(filePath);
+    const QString absPath = info.absoluteFilePath();
+
+    QFile file(absPath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, tr("Error"), tr("Could not open file:\n%1").arg(absPath));
+        return false;
+    }
+
+    QTextStream in(&file);
+    in.setEncoding(QStringConverter::Utf8);
+    editor->setPlainText(in.readAll());
+    file.close();
+
+    currentFile = absPath;
+    m_currentPath = info.absolutePath();
+    m_fileSystemModel->setRootPath(m_currentPath);
+    ui.fileView1->setRootIndex(m_fileSystemModel->index(m_currentPath));
+
+    setWindowTitle(QString("Mdedit - %1").arg(info.fileName()));
+    updateStatusBar();
+    return true;
+}
+
+void MainWindow::onFileOpen() {
+    const QString startDir = m_currentPath.isEmpty() ? QDir::homePath() : m_currentPath;
     QString fileName = QFileDialog::getOpenFileName(
-        this, tr("Open File"), "/home", tr("Text files (*.*);;All Files (*)"));
+        this, tr("Open File"), startDir, tr("Markdown & Text files (*.md *.MD *.markdown *.txt *.*);;All Files (*)"));
 
     if (!fileName.isEmpty()) {
-        QFile file(fileName);
-        if (file.open(QFile::ReadOnly | QFile::Text)) {
-            QTextStream in(&file);
-            QString text = in.readAll();
-            editor->setPlainText(text);
-            file.close();
-            currentFile = fileName;
-            updateStatusBar();
-        } else {
-            QMessageBox::warning(this, "Error", "Could not open file.");
-        }
+        openFile(fileName);
     }
-
 }
 void MainWindow::onFileSave() {
     if (currentFile.isEmpty()) {
@@ -493,6 +495,7 @@ void MainWindow::onFileSave() {
     QFile file(currentFile);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(&file);
+        out.setEncoding(QStringConverter::Utf8);
         out << editor->toPlainText();
         file.close();
         updateStatusBar();
@@ -502,18 +505,19 @@ void MainWindow::onFileSave() {
 }
 
 void MainWindow::onFileSaveAs() {
-
+    const QString startDir = m_currentPath.isEmpty() ? QDir::homePath() : m_currentPath;
     const QString fileName = QFileDialog::getSaveFileName(
-        this, "Save File As", "/home", "Text Files (*.MD);;All Files (*)");
+        this, "Save File As", startDir, "Markdown Files (*.md *.MD);;All Files (*)");
 
     if (fileName.isEmpty()) return;
     currentFile = fileName;
     QFile file(fileName);
-    if (file.open(QFile::WriteOnly)) {
+    if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream stream(&file);
         stream.setEncoding(QStringConverter::Utf8);
         stream << editor->toPlainText();
         file.close();
+        setWindowTitle(QString("Mdedit - %1").arg(QFileInfo(fileName).fileName()));
         updateStatusBar();
     }
 }
@@ -635,15 +639,6 @@ void MainWindow::onFileViewDoubleClicked(const QModelIndex &index)
         ui.fileView1->setRootIndex(index);
     }
     else if (info.isFile()) {
-        QFile file(info.absoluteFilePath());
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream in(&file);
-            editor->setPlainText(in.readAll());
-            currentFile = info.absoluteFilePath();
-            file.close();
-            updateStatusBar();
-        } else {
-            QMessageBox::warning(this, "Chyba", "Nelze otevřít soubor.");
-        }
+        openFile(info.absoluteFilePath());
     }
 }
