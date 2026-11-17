@@ -16,7 +16,11 @@
 //#include "parentdirproxymodel.h"
 
 #include <QFileSystemModel>
+#include <QImage>
+#include <QImageReader>
+#include <QScrollBar>
 #include <QSplitter>
+#include <QTimer>
 #include <utils.h>
 #include "codeeditor.h"
 
@@ -104,9 +108,22 @@ MainWindow::MainWindow() {
     splitter->addWidget(widget1);
     splitter->addWidget(widget2);
     splitter->addWidget(widget3);
+    connect(splitter, &QSplitter::splitterMoved, this, [this]() {
+        updatePreview();
+    });
 
     setCentralWidget(splitter);
     updatePreview();
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event) {
+    QMainWindow::resizeEvent(event);
+    updatePreview();
+}
+
+void MainWindow::showEvent(QShowEvent *event) {
+    QMainWindow::showEvent(event);
+    QTimer::singleShot(0, this, &MainWindow::updatePreview);
 }
 
 MainWindow::~MainWindow() {
@@ -116,19 +133,43 @@ MainWindow::~MainWindow() {
     delete editor;
 }
 void MainWindow::updatePreview() {
+    const int scrollPos = ui.textEditPreview->verticalScrollBar()->value();
+
+    const QString baseDir = !currentFile.isEmpty()
+        ? QFileInfo(currentFile).absolutePath()
+        : (!m_currentPath.isEmpty() ? m_currentPath : QDir::currentPath());
+    const QUrl baseUrl = QUrl::fromLocalFile(baseDir + "/");
+    ui.textEditPreview->document()->setBaseUrl(baseUrl);
 
     QString markdownText = editor->toPlainText();
     QString htmlText = convertMarkdownToHtml(markdownText);
-   // ui.textEditPreview->setHtmlResponsive(htmlText);
-    ui.textEditPreview->setHtml(htmlText);
-    ui.textEditHtml->setPlainText(htmlText);
-    //ui.textEditPreview->setStyleSheet("h1 { color: red; } ul { color: black; } em { font-style: italic; }");
+
     findAndDownloadImages(htmlText);
 
+    const QString previewHtml = preparePreviewHtml(htmlText);
+    ui.textEditPreview->setHtml(previewHtml);
+    ui.textEditPreview->verticalScrollBar()->setValue(scrollPos);
+    ui.textEditHtml->setPlainText(htmlText);
 }
-QString MainWindow::convertMarkdownToHtml(const QString &markdown) {
 
-    QByteArray markdownBytes = markdown.toUtf8();
+QString MainWindow::convertMarkdownToHtml(const QString &markdown) {
+    // Normalize backslashes in Markdown image paths ![alt](C:\path\img.png) -> ![alt](C:/path/img.png)
+    QString normalizedMarkdown = markdown;
+    static const QRegularExpression mdImgRegex(R"(!\[([^\]]*)\]\(([^)]+)\))");
+    auto matches = mdImgRegex.globalMatch(markdown);
+    int offset = 0;
+    while (matches.hasNext()) {
+        auto m = matches.next();
+        QString path = m.captured(2);
+        if (path.contains('\\')) {
+            path.replace('\\', '/');
+            const QString replacement = QString("![%1](%2)").arg(m.captured(1), path);
+            normalizedMarkdown.replace(m.capturedStart() + offset, m.capturedLength(), replacement);
+            offset += replacement.length() - m.capturedLength();
+        }
+    }
+
+    QByteArray markdownBytes = normalizedMarkdown.toUtf8();
 
     int options = CMARK_OPT_DEFAULT | CMARK_OPT_UNSAFE | CMARK_OPT_SMART;
 
@@ -160,22 +201,162 @@ QString MainWindow::convertMarkdownToHtml(const QString &markdown) {
 
 void MainWindow::findAndDownloadImages(const QString &html)
 {
-    static const QRegularExpression imgRegex("<img[^>]+src=[\"'](https?://[^\"']+)[\"'][^>]*>");
+    static const QRegularExpression imgRegex("<img[^>]+src=[\"']([^\"']+)[\"'][^>]*>",
+                                             QRegularExpression::CaseInsensitiveOption);
     auto matches = imgRegex.globalMatch(html);
+
+    const QString baseDir = !currentFile.isEmpty()
+        ? QFileInfo(currentFile).absolutePath()
+        : (!m_currentPath.isEmpty() ? m_currentPath : QDir::currentPath());
+    const QUrl baseUrl = ui.textEditPreview->document()->baseUrl();
 
     while (matches.hasNext()) {
         auto match = matches.next();
-        QUrl url(match.captured(1));
+        const QString rawSrc = match.captured(1).trimmed();
+        if (rawSrc.isEmpty()) {
+            continue;
+        }
 
-        if (url.isValid() && !downloadedImageUrls.contains(url)) {
-            qDebug() << "Img found:" << url;
-            downloadedImageUrls.insert(url);
-            QNetworkRequest request(url);
-            QNetworkReply *reply = networkManager->get(request);
+        // 1. Web image (http / https)
+        if (rawSrc.startsWith("http://", Qt::CaseInsensitive) ||
+            rawSrc.startsWith("https://", Qt::CaseInsensitive)) {
+            QUrl url(rawSrc);
+            if (downloadedImages.contains(url)) {
+                ui.textEditPreview->document()->addResource(
+                    QTextDocument::ImageResource, url, QVariant(downloadedImages.value(url)));
+            } else if (url.isValid() && !downloadedImageUrls.contains(url)) {
+                qDebug() << "Web img found:" << url;
+                downloadedImageUrls.insert(url);
+                QNetworkRequest request(url);
+                QNetworkReply *reply = networkManager->get(request);
 
-            connect(reply, &QNetworkReply::finished, this, &MainWindow::onImageDownloaded);
+                connect(reply, &QNetworkReply::finished, this, &MainWindow::onImageDownloaded);
+            }
+            continue;
+        }
+
+        // 2. Local image (relative path, C:/..., C:\..., or file:///...)
+        const QUrl resourceKey(rawSrc);
+        const QUrl resolvedKey = baseUrl.resolved(resourceKey);
+
+        QString localPath;
+        QUrl parsedUrl(rawSrc);
+        if (parsedUrl.isLocalFile()) {
+            localPath = parsedUrl.toLocalFile();
+        } else {
+            QString decoded = QUrl::fromPercentEncoding(rawSrc.toUtf8());
+            decoded.replace('\\', '/');
+            QFileInfo fi(decoded);
+            if (fi.isAbsolute()) {
+                localPath = fi.absoluteFilePath();
+            } else {
+                localPath = QDir(baseDir).filePath(decoded);
+            }
+        }
+
+        QFileInfo localInfo(localPath);
+        if (localInfo.exists() && localInfo.isFile()) {
+            const QString absFilePath = localInfo.absoluteFilePath();
+            QImage img;
+            if (localImageCache.contains(absFilePath)) {
+                img = localImageCache.value(absFilePath);
+            } else {
+                QImageReader reader(absFilePath);
+                reader.setAutoTransform(true);
+                const QSize origSize = reader.size();
+                if (origSize.isValid() && origSize.width() > 960) {
+                    reader.setScaledSize(origSize.scaled(960, 960, Qt::KeepAspectRatio));
+                }
+                img = reader.read();
+                if (!img.isNull()) {
+                    localImageCache.insert(absFilePath, img);
+                }
+            }
+            if (!img.isNull()) {
+                ui.textEditPreview->document()->addResource(
+                    QTextDocument::ImageResource, resourceKey, QVariant(img));
+                ui.textEditPreview->document()->addResource(
+                    QTextDocument::ImageResource, resolvedKey, QVariant(img));
+            }
         }
     }
+}
+
+QString MainWindow::preparePreviewHtml(const QString &html) const
+{
+    int viewportW = ui.textEditPreview->viewport()->width();
+    if (viewportW < 200) {
+        viewportW = qMax(450, width() / 3);
+    }
+    const int availW = qMax(160, viewportW - 32);
+
+    QString result = html;
+    static const QRegularExpression imgTagRegex("<img\\b[^>]*>", QRegularExpression::CaseInsensitiveOption);
+    static const QRegularExpression widthPctRegex("\\bwidth\\s*=\\s*[\"'](\\d+)%[\"']", QRegularExpression::CaseInsensitiveOption);
+    static const QRegularExpression heightPctRegex("\\bheight\\s*=\\s*[\"'](\\d+)%[\"']", QRegularExpression::CaseInsensitiveOption);
+    static const QRegularExpression styleWidthPctRegex("width\\s*:\\s*(\\d+)%", QRegularExpression::CaseInsensitiveOption);
+    static const QRegularExpression tdWidthPctRegex("<td\\b[^>]*\\bwidth\\s*=\\s*[\"'](\\d+)%[\"'][^>]*>\\s*$", QRegularExpression::CaseInsensitiveOption);
+    static const QRegularExpression tdOpenRegex("<td\\b[^>]*>\\s*$", QRegularExpression::CaseInsensitiveOption);
+
+    auto matches = imgTagRegex.globalMatch(html);
+    int offset = 0;
+
+    while (matches.hasNext()) {
+        auto m = matches.next();
+        QString tag = m.captured(0);
+        const QString before = html.left(m.capturedStart());
+
+        // Check if this <img> is inside a <td> cell
+        double cellFraction = 1.0;
+        auto tdPctMatch = tdWidthPctRegex.match(before);
+        if (tdPctMatch.hasMatch()) {
+            cellFraction = qBound(0.1, tdPctMatch.captured(1).toDouble() / 100.0, 1.0) * 0.94;
+        } else if (tdOpenRegex.match(before).hasMatch()) {
+            cellFraction = 0.47;
+        }
+
+        // Remove percentage height attributes which Qt parses as 0
+        tag.remove(heightPctRegex);
+
+        auto wMatch = widthPctRegex.match(tag);
+        if (wMatch.hasMatch()) {
+            const double pct = qBound(5.0, wMatch.captured(1).toDouble(), 100.0) / 100.0;
+            const int pxWidth = qMax(40, int(availW * cellFraction * pct));
+            tag.replace(wMatch.capturedStart(), wMatch.capturedLength(), QString("width=\"%1\"").arg(pxWidth));
+        } else {
+            auto swMatch = styleWidthPctRegex.match(tag);
+            if (swMatch.hasMatch()) {
+                const double pct = qBound(5.0, swMatch.captured(1).toDouble(), 100.0) / 100.0;
+                const int pxWidth = qMax(40, int(availW * cellFraction * pct));
+                tag.remove(swMatch.capturedStart(), swMatch.capturedLength());
+                tag.insert(4, QString(" width=\"%1\" ").arg(pxWidth));
+            } else {
+                static const QRegularExpression anyWidthRegex("\\bwidth\\s*=", QRegularExpression::CaseInsensitiveOption);
+                static const QRegularExpression srcAttrRegex("\\bsrc\\s*=\\s*[\"']([^\"']+)[\"']", QRegularExpression::CaseInsensitiveOption);
+                if (!anyWidthRegex.match(tag).hasMatch()) {
+                    auto srcMatch = srcAttrRegex.match(tag);
+                    if (srcMatch.hasMatch()) {
+                        const QUrl resUrl = ui.textEditPreview->document()->baseUrl().resolved(QUrl(srcMatch.captured(1)));
+                        const QVariant res = ui.textEditPreview->document()->resource(QTextDocument::ImageResource, resUrl);
+                        if (res.canConvert<QImage>()) {
+                            const QImage img = res.value<QImage>();
+                            const int maxPxWidth = qMax(40, int(availW * cellFraction));
+                            if (img.width() > maxPxWidth) {
+                                tag.insert(4, QString(" width=\"%1\" ").arg(maxPxWidth));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (tag != m.captured(0)) {
+            result.replace(m.capturedStart() + offset, m.capturedLength(), tag);
+            offset += tag.length() - m.capturedLength();
+        }
+    }
+
+    return result;
 }
 
 void MainWindow::onImageDownloaded() {
@@ -193,10 +374,11 @@ void MainWindow::onImageDownloaded() {
     QByteArray data = reply->readAll();
     qDebug() << "Downloaded:" << url.toString();
 
+    downloadedImages.insert(url, data);
     ui.textEditPreview->document()->addResource(QTextDocument::ImageResource, url, QVariant(data));
     updatePreview();
 
-    reply->deleteLater(); //
+    reply->deleteLater();
 }
 
 void MainWindow::insertImageProgrammatically() {
@@ -464,7 +646,7 @@ bool MainWindow::openFile(const QString &filePath) {
 
     QTextStream in(&file);
     in.setEncoding(QStringConverter::Utf8);
-    editor->setPlainText(in.readAll());
+    const QString content = in.readAll();
     file.close();
 
     currentFile = absPath;
@@ -474,6 +656,7 @@ bool MainWindow::openFile(const QString &filePath) {
 
     setWindowTitle(QString("Mdedit - %1").arg(info.fileName()));
     updateStatusBar();
+    editor->setPlainText(content);
     return true;
 }
 
@@ -639,6 +822,17 @@ void MainWindow::onFileViewDoubleClicked(const QModelIndex &index)
         ui.fileView1->setRootIndex(index);
     }
     else if (info.isFile()) {
+        static const QStringList imgExts = {"png", "jpg", "jpeg", "gif", "bmp", "svg", "webp"};
+        if (imgExts.contains(info.suffix().toLower())) {
+            QString imgPath = info.absoluteFilePath();
+            if (!currentFile.isEmpty()) {
+                QDir docDir = QFileInfo(currentFile).absoluteDir();
+                imgPath = docDir.relativeFilePath(imgPath);
+            }
+            imgPath.replace('\\', '/');
+            editor->textCursor().insertText(QString("![%1](%2)").arg(info.completeBaseName(), imgPath));
+            return;
+        }
         openFile(info.absoluteFilePath());
     }
 }

@@ -4,6 +4,8 @@
 
 #include "ui_mainwindow.h"
 #include <QFileSystemModel>
+#include <QHash>
+#include <QImage>
 #include <QMainWindow>
 
 class QNetworkAccessManager;
@@ -33,7 +35,10 @@ private:
     MarkdownHighlighter *mdhighlighter;
     CodeEditor *editor;
     QSet<QUrl> downloadedImageUrls;
+    QHash<QUrl, QByteArray> downloadedImages;
+    QHash<QString, QImage> localImageCache;
     void findAndDownloadImages(const QString &html);
+    QString preparePreviewHtml(const QString &html) const;
     void updateStatusBar();
     QFileSystemModel *m_fileSystemModel;
     QString m_currentPath;
@@ -71,7 +76,8 @@ private slots:
     void onFileViewDoubleClicked(const QModelIndex &index);
 
 protected:
-
+    void resizeEvent(QResizeEvent *event) override;
+    void showEvent(QShowEvent *event) override;
 };
 
 #endif
